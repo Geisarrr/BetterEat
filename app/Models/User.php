@@ -6,36 +6,47 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens; // 1. Wajib tambahkan ini untuk Token API
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    // 2. Tambahkan HasApiTokens di sini
+    use HasApiTokens, HasFactory, Notifiable;
 
-    // 1. Beritahu Laravel nama Primary Key kustom dari ERD-mu
     protected $primaryKey = 'user_id';
 
-    // 2. Daftarkan kolom yang diizinkan untuk diisi data (Mass Assignment)
+    // 3. Matikan fitur updated_at karena di tabel users kita hanya punya created_at
+    const UPDATED_AT = null;
+
     protected $fillable = [
         'full_name',
         'username',
         'email',
-        'password',
+        'password_hash', // 4. Ubah dari 'password' menjadi 'password_hash'
         'role',
         'profile_photo',
+        'is_active',     // Tambahan sesuai tabel ERD
     ];
 
-    // 3. Sembunyikan kolom sensitif saat data user dipanggil (misal lewat API)
     protected $hidden = [
-        'password',
+        'password_hash', // 5. Ubah dari 'password'
         'remember_token',
     ];
 
-    // 4. Casting tipe data bawaan Laravel
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed', // Laravel otomatis mengelola hash password di sini juga
+            // Bagian 'password' => 'hashed' dihapus karena kita melakukan Hash manual di Controller
         ];
+    }
+
+    /**
+     * 6. Method Overriding untuk mengarahkan fitur Auth bawaan Laravel
+     * agar membaca kolom 'password_hash' dan bukan 'password'.
+     */
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
     }
 }
