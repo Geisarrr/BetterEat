@@ -12,14 +12,17 @@ class CalorieLog extends Model
     protected $table = 'calorie_logs';
     protected $primaryKey = 'log_id';
 
-    // Matikan timestamps bawaan Laravel karena menggunakan logged_at
-    public $timestamps = false;
+    // public $timestamps = false; <--- Dihapus agar Laravel otomatis mengisi created_at & updated_at
 
     protected $fillable = [
         'user_id',
         'food_id',
         'quantity_gram',
-        'logged_at', // Bisa diisi manual atau dibiarkan agar otomatis pakai waktu server
+        'calories',
+        'protein_g',
+        'fat_g',
+        'carbs_g',
+        'logged_at',
     ];
 
     /**

@@ -1,0 +1,802 @@
+[
+    {
+        "food_name": "Nasi",
+        "calories_per_100g": 180.0,
+        "protein_g": 3.0,
+        "fat_g": 0.3,
+        "carbs_g": 39.8,
+        "fiber_g": 0.2
+    },
+    {
+        "food_name": "Nasi tim",
+        "calories_per_100g": 120.0,
+        "protein_g": 2.4,
+        "fat_g": 0.4,
+        "carbs_g": 26.0,
+        "fiber_g": 0.5
+    },
+    {
+        "food_name": "Tapai beras",
+        "calories_per_100g": 99.0,
+        "protein_g": 1.7,
+        "fat_g": 0.3,
+        "carbs_g": 22.4,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Tepung beras, mentah",
+        "calories_per_100g": 353.0,
+        "protein_g": 7.0,
+        "fat_g": 0.5,
+        "carbs_g": 80.0,
+        "fiber_g": 2.4
+    },
+    {
+        "food_name": "Nasi beras merah",
+        "calories_per_100g": 149.0,
+        "protein_g": 2.8,
+        "fat_g": 0.4,
+        "carbs_g": 32.5,
+        "fiber_g": 0.3
+    },
+    {
+        "food_name": "Bihun, mentah",
+        "calories_per_100g": 348.0,
+        "protein_g": 4.7,
+        "fat_g": 0.1,
+        "carbs_g": 82.1,
+        "fiber_g": 1.2
+    },
+    {
+        "food_name": "Bihun goreng instan",
+        "calories_per_100g": 381.0,
+        "protein_g": 6.1,
+        "fat_g": 3.9,
+        "carbs_g": 80.3,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Bihun Jagung, mentah",
+        "calories_per_100g": 354.0,
+        "protein_g": 0.5,
+        "fat_g": 0.3,
+        "carbs_g": 87.4,
+        "fiber_g": 3.0
+    },
+    {
+        "food_name": "Nasi jagung",
+        "calories_per_100g": 357.0,
+        "protein_g": 8.8,
+        "fat_g": 0.5,
+        "carbs_g": 79.5,
+        "fiber_g": 6.2
+    },
+    {
+        "food_name": "Jagung muda, rebus",
+        "calories_per_100g": 142.0,
+        "protein_g": 5.0,
+        "fat_g": 0.7,
+        "carbs_g": 30.3,
+        "fiber_g": 0.8
+    },
+    {
+        "food_name": "Jagung kuning, tepung",
+        "calories_per_100g": 355.0,
+        "protein_g": 9.2,
+        "fat_g": 3.9,
+        "carbs_g": 73.7,
+        "fiber_g": 7.2
+    },
+    {
+        "food_name": "Jagung kuning pipil, rebus",
+        "calories_per_100g": 154.0,
+        "protein_g": 3.8,
+        "fat_g": 3.5,
+        "carbs_g": 28.4,
+        "fiber_g": 0.7
+    },
+    {
+        "food_name": "Tepung jagung putih",
+        "calories_per_100g": 355.0,
+        "protein_g": 9.2,
+        "fat_g": 3.9,
+        "carbs_g": 73.7,
+        "fiber_g": 7.2
+    },
+    {
+        "food_name": "Ketupat ketan",
+        "calories_per_100g": 212.0,
+        "protein_g": 4.0,
+        "fat_g": 4.6,
+        "carbs_g": 38.6,
+        "fiber_g": 0.2
+    },
+    {
+        "food_name": "Ketan hitam, matang",
+        "calories_per_100g": 181.0,
+        "protein_g": 4.0,
+        "fat_g": 1.2,
+        "carbs_g": 37.3,
+        "fiber_g": 0.3
+    },
+    {
+        "food_name": "Tapai ketan hitam",
+        "calories_per_100g": 166.0,
+        "protein_g": 3.8,
+        "fat_g": 1.0,
+        "carbs_g": 34.4,
+        "fiber_g": 0.3
+    },
+    {
+        "food_name": "Ketan putih, matang",
+        "calories_per_100g": 163.0,
+        "protein_g": 3.0,
+        "fat_g": 0.4,
+        "carbs_g": 35.7,
+        "fiber_g": 0.2
+    },
+    {
+        "food_name": "Tapai ketan putih",
+        "calories_per_100g": 172.0,
+        "protein_g": 3.0,
+        "fat_g": 0.5,
+        "carbs_g": 37.5,
+        "fiber_g": 0.6
+    },
+    {
+        "food_name": "Maizena, tepung",
+        "calories_per_100g": 341.0,
+        "protein_g": 0.3,
+        "fat_g": 0.0,
+        "carbs_g": 85.0,
+        "fiber_g": 7.0
+    },
+    {
+        "food_name": "Makaroni, mentah",
+        "calories_per_100g": 353.0,
+        "protein_g": 8.7,
+        "fat_g": 0.4,
+        "carbs_g": 78.7,
+        "fiber_g": 4.9
+    },
+    {
+        "food_name": "Mi basah",
+        "calories_per_100g": 88.0,
+        "protein_g": 0.6,
+        "fat_g": 3.3,
+        "carbs_g": 14.0,
+        "fiber_g": 0.1
+    },
+    {
+        "food_name": "Mi kering",
+        "calories_per_100g": 339.0,
+        "protein_g": 10.0,
+        "fat_g": 1.7,
+        "carbs_g": 6.3,
+        "fiber_g": 0.4
+    },
+    {
+        "food_name": "Misoa",
+        "calories_per_100g": 345.0,
+        "protein_g": 8.5,
+        "fat_g": 2.2,
+        "carbs_g": 78.0,
+        "fiber_g": 0.5
+    },
+    {
+        "food_name": "Roti putih",
+        "calories_per_100g": 248.0,
+        "protein_g": 8.0,
+        "fat_g": 1.2,
+        "carbs_g": 50.0,
+        "fiber_g": 9.1
+    },
+    {
+        "food_name": "Tepung terigu",
+        "calories_per_100g": 333.0,
+        "protein_g": 9.0,
+        "fat_g": 1.0,
+        "carbs_g": 77.2,
+        "fiber_g": 0.3
+    },
+    {
+        "food_name": "Amparan tatak",
+        "calories_per_100g": 191.0,
+        "protein_g": 1.3,
+        "fat_g": 5.5,
+        "carbs_g": 34.0,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Apang kukus, kue",
+        "calories_per_100g": 202.0,
+        "protein_g": 3.0,
+        "fat_g": 0.3,
+        "carbs_g": 46.7,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Apem, kue",
+        "calories_per_100g": 148.0,
+        "protein_g": 2.0,
+        "fat_g": 0.5,
+        "carbs_g": 33.9,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Biskuit",
+        "calories_per_100g": 458.0,
+        "protein_g": 6.9,
+        "fat_g": 14.4,
+        "carbs_g": 75.1,
+        "fiber_g": 2.1
+    },
+    {
+        "food_name": "Bakpia, kue",
+        "calories_per_100g": 272.0,
+        "protein_g": 8.7,
+        "fat_g": 6.7,
+        "carbs_g": 44.1,
+        "fiber_g": 0.9
+    },
+    {
+        "food_name": "Bakwan",
+        "calories_per_100g": 280.0,
+        "protein_g": 8.2,
+        "fat_g": 10.2,
+        "carbs_g": 39.0,
+        "fiber_g": 3.4
+    },
+    {
+        "food_name": "Bantal",
+        "calories_per_100g": 190.0,
+        "protein_g": 3.3,
+        "fat_g": 0.3,
+        "carbs_g": 43.5,
+        "fiber_g": 3.4
+    },
+    {
+        "food_name": "Baruasa",
+        "calories_per_100g": 417.0,
+        "protein_g": 6.5,
+        "fat_g": 8.2,
+        "carbs_g": 79.3,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Batar daan",
+        "calories_per_100g": 107.0,
+        "protein_g": 2.2,
+        "fat_g": 2.2,
+        "carbs_g": 19.6,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Bika ambon",
+        "calories_per_100g": 199.0,
+        "protein_g": 2.1,
+        "fat_g": 1.5,
+        "carbs_g": 44.4,
+        "fiber_g": 0.3
+    },
+    {
+        "food_name": "Bingka",
+        "calories_per_100g": 273.0,
+        "protein_g": 5.3,
+        "fat_g": 10.6,
+        "carbs_g": 39.1,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Bobengka",
+        "calories_per_100g": 225.0,
+        "protein_g": 5.3,
+        "fat_g": 2.6,
+        "carbs_g": 45.2,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Bolu peca",
+        "calories_per_100g": 197.0,
+        "protein_g": 3.3,
+        "fat_g": 4.6,
+        "carbs_g": 35.6,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Brem",
+        "calories_per_100g": 249.0,
+        "protein_g": 3.4,
+        "fat_g": 0.4,
+        "carbs_g": 58.0,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Bubur tinotuan (Manado)",
+        "calories_per_100g": 156.0,
+        "protein_g": 2.3,
+        "fat_g": 0.2,
+        "carbs_g": 15.6,
+        "fiber_g": 8.2
+    },
+    {
+        "food_name": "Cake tape",
+        "calories_per_100g": 323.0,
+        "protein_g": 4.9,
+        "fat_g": 11.5,
+        "carbs_g": 50.1,
+        "fiber_g": 1.4
+    },
+    {
+        "food_name": "Cangkuning",
+        "calories_per_100g": 204.0,
+        "protein_g": 2.8,
+        "fat_g": 7.5,
+        "carbs_g": 31.4,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Dodol bali",
+        "calories_per_100g": 298.0,
+        "protein_g": 3.7,
+        "fat_g": 2.1,
+        "carbs_g": 65.9,
+        "fiber_g": 0.4
+    },
+    {
+        "food_name": "Dodol galamai",
+        "calories_per_100g": 348.0,
+        "protein_g": 0.4,
+        "fat_g": 3.8,
+        "carbs_g": 76.1,
+        "fiber_g": 0.5
+    },
+    {
+        "food_name": "Dodol kedondong",
+        "calories_per_100g": 331.0,
+        "protein_g": 1.9,
+        "fat_g": 7.6,
+        "carbs_g": 63.8,
+        "fiber_g": 1.0
+    },
+    {
+        "food_name": "Dodol manado",
+        "calories_per_100g": 373.0,
+        "protein_g": 4.3,
+        "fat_g": 16.5,
+        "carbs_g": 51.9,
+        "fiber_g": 0.4
+    },
+    {
+        "food_name": "Emping beras",
+        "calories_per_100g": 403.0,
+        "protein_g": 10.6,
+        "fat_g": 2.2,
+        "carbs_g": 85.3,
+        "fiber_g": 0.2
+    },
+    {
+        "food_name": "Gemblong",
+        "calories_per_100g": 274.0,
+        "protein_g": 1.7,
+        "fat_g": 5.4,
+        "carbs_g": 55.5,
+        "fiber_g": 2.2
+    },
+    {
+        "food_name": "Gendar goreng",
+        "calories_per_100g": 407.0,
+        "protein_g": 6.4,
+        "fat_g": 28.2,
+        "carbs_g": 32.0,
+        "fiber_g": 0.1
+    },
+    {
+        "food_name": "Intip goreng",
+        "calories_per_100g": 474.0,
+        "protein_g": 7.6,
+        "fat_g": 21.6,
+        "carbs_g": 62.3,
+        "fiber_g": 1.2
+    },
+    {
+        "food_name": "Jagung gerontol",
+        "calories_per_100g": 156.0,
+        "protein_g": 2.7,
+        "fat_g": 1.3,
+        "carbs_g": 33.3,
+        "fiber_g": 1.0
+    },
+    {
+        "food_name": "Jagung titi",
+        "calories_per_100g": 374.0,
+        "protein_g": 9.4,
+        "fat_g": 2.2,
+        "carbs_g": 79.1,
+        "fiber_g": 0.8
+    },
+    {
+        "food_name": "Japilus",
+        "calories_per_100g": 500.0,
+        "protein_g": 1.2,
+        "fat_g": 25.1,
+        "carbs_g": 67.3,
+        "fiber_g": 0.4
+    },
+    {
+        "food_name": "Kakicak",
+        "calories_per_100g": 296.0,
+        "protein_g": 3.4,
+        "fat_g": 15.1,
+        "carbs_g": 36.7,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Kambose",
+        "calories_per_100g": 164.0,
+        "protein_g": 3.0,
+        "fat_g": 2.4,
+        "carbs_g": 32.6,
+        "fiber_g": 4.3
+    },
+    {
+        "food_name": "Kapusa",
+        "calories_per_100g": 158.0,
+        "protein_g": 4.4,
+        "fat_g": 3.2,
+        "carbs_g": 27.8,
+        "fiber_g": 5.3
+    },
+    {
+        "food_name": "Keddo bodong",
+        "calories_per_100g": 290.0,
+        "protein_g": 4.6,
+        "fat_g": 5.7,
+        "carbs_g": 55.2,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Kelepon, kue",
+        "calories_per_100g": 215.0,
+        "protein_g": 3.7,
+        "fat_g": 3.7,
+        "carbs_g": 41.8,
+        "fiber_g": 1.0
+    },
+    {
+        "food_name": "Kereput",
+        "calories_per_100g": 580.0,
+        "protein_g": 4.8,
+        "fat_g": 39.6,
+        "carbs_g": 51.1,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Ketoprak",
+        "calories_per_100g": 153.0,
+        "protein_g": 7.9,
+        "fat_g": 7.7,
+        "carbs_g": 13.0,
+        "fiber_g": 2.9
+    },
+    {
+        "food_name": "Ketupat kandangan",
+        "calories_per_100g": 109.0,
+        "protein_g": 2.2,
+        "fat_g": 5.2,
+        "carbs_g": 13.4,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Koya",
+        "calories_per_100g": 366.0,
+        "protein_g": 4.2,
+        "fat_g": 4.3,
+        "carbs_g": 77.5,
+        "fiber_g": 0.8
+    },
+    {
+        "food_name": "Koya mirasa",
+        "calories_per_100g": 370.0,
+        "protein_g": 8.0,
+        "fat_g": 1.0,
+        "carbs_g": 82.2,
+        "fiber_g": 0.4
+    },
+    {
+        "food_name": "Koyabu",
+        "calories_per_100g": 241.0,
+        "protein_g": 3.4,
+        "fat_g": 4.3,
+        "carbs_g": 47.2,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Kue ali",
+        "calories_per_100g": 440.0,
+        "protein_g": 3.8,
+        "fat_g": 18.5,
+        "carbs_g": 64.5,
+        "fiber_g": 0.3
+    },
+    {
+        "food_name": "Kue bangen",
+        "calories_per_100g": 442.0,
+        "protein_g": 3.3,
+        "fat_g": 14.7,
+        "carbs_g": 74.2,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Kue gelang",
+        "calories_per_100g": 448.0,
+        "protein_g": 5.8,
+        "fat_g": 16.1,
+        "carbs_g": 70.0,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Kue jahe",
+        "calories_per_100g": 425.0,
+        "protein_g": 1.6,
+        "fat_g": 8.8,
+        "carbs_g": 84.6,
+        "fiber_g": 1.2
+    },
+    {
+        "food_name": "Kue kelapa",
+        "calories_per_100g": 591.0,
+        "protein_g": 5.6,
+        "fat_g": 42.1,
+        "carbs_g": 47.5,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Kue koa",
+        "calories_per_100g": 340.0,
+        "protein_g": 4.8,
+        "fat_g": 0.4,
+        "carbs_g": 79.3,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Kue ku temu",
+        "calories_per_100g": 214.0,
+        "protein_g": 3.5,
+        "fat_g": 0.2,
+        "carbs_g": 49.6,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Kue lumpur",
+        "calories_per_100g": 291.0,
+        "protein_g": 3.6,
+        "fat_g": 11.1,
+        "carbs_g": 44.1,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Kue pelita",
+        "calories_per_100g": 141.0,
+        "protein_g": 5.3,
+        "fat_g": 5.5,
+        "carbs_g": 17.6,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Kue putu cangkir",
+        "calories_per_100g": 304.0,
+        "protein_g": 5.3,
+        "fat_g": 7.0,
+        "carbs_g": 54.9,
+        "fiber_g": 0.9
+    },
+    {
+        "food_name": "Kue sus",
+        "calories_per_100g": 221.0,
+        "protein_g": 7.5,
+        "fat_g": 10.2,
+        "carbs_g": 24.8,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Kue thipan",
+        "calories_per_100g": 247.0,
+        "protein_g": 2.9,
+        "fat_g": 4.2,
+        "carbs_g": 49.5,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Laksa/Putu mayang",
+        "calories_per_100g": 121.0,
+        "protein_g": 1.7,
+        "fat_g": 3.4,
+        "carbs_g": 21.1,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Lapis legit",
+        "calories_per_100g": 389.0,
+        "protein_g": 6.6,
+        "fat_g": 15.7,
+        "carbs_g": 55.5,
+        "fiber_g": 0.5
+    },
+    {
+        "food_name": "Lupis ketan",
+        "calories_per_100g": 164.0,
+        "protein_g": 1.8,
+        "fat_g": 2.1,
+        "carbs_g": 34.5,
+        "fiber_g": 0.7
+    },
+    {
+        "food_name": "Manan samin",
+        "calories_per_100g": 379.0,
+        "protein_g": 3.4,
+        "fat_g": 18.1,
+        "carbs_g": 50.6,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Martabak india",
+        "calories_per_100g": 153.0,
+        "protein_g": 4.5,
+        "fat_g": 4.2,
+        "carbs_g": 24.3,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Martabak mesir",
+        "calories_per_100g": 278.0,
+        "protein_g": 5.1,
+        "fat_g": 8.6,
+        "carbs_g": 45.0,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Masekat",
+        "calories_per_100g": 369.0,
+        "protein_g": 2.1,
+        "fat_g": 7.0,
+        "carbs_g": 74.1,
+        "fiber_g": 4.0
+    },
+    {
+        "food_name": "Mie aceh rebus",
+        "calories_per_100g": 113.0,
+        "protein_g": 3.0,
+        "fat_g": 3.2,
+        "carbs_g": 18.1,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Mie ayam",
+        "calories_per_100g": 102.0,
+        "protein_g": 6.2,
+        "fat_g": 3.9,
+        "carbs_g": 10.5,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Mie bakso",
+        "calories_per_100g": 114.0,
+        "protein_g": 5.3,
+        "fat_g": 3.0,
+        "carbs_g": 16.4,
+        "fiber_g": 0.1
+    },
+    {
+        "food_name": "Mie celon",
+        "calories_per_100g": 102.0,
+        "protein_g": 3.0,
+        "fat_g": 2.1,
+        "carbs_g": 17.8,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Mie pangsit basah",
+        "calories_per_100g": 105.0,
+        "protein_g": 5.9,
+        "fat_g": 4.9,
+        "carbs_g": 9.4,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Nasi gemuk",
+        "calories_per_100g": 192.0,
+        "protein_g": 3.8,
+        "fat_g": 8.8,
+        "carbs_g": 24.4,
+        "fiber_g": 0.7
+    },
+    {
+        "food_name": "Nasi gurih",
+        "calories_per_100g": 190.0,
+        "protein_g": 4.7,
+        "fat_g": 7.5,
+        "carbs_g": 26.0,
+        "fiber_g": 0.7
+    },
+    {
+        "food_name": "Nasi minyak",
+        "calories_per_100g": 207.0,
+        "protein_g": 3.5,
+        "fat_g": 5.0,
+        "carbs_g": 37.1,
+        "fiber_g": 0.8
+    },
+    {
+        "food_name": "Nasi rames",
+        "calories_per_100g": 155.0,
+        "protein_g": 10.3,
+        "fat_g": 4.2,
+        "carbs_g": 19.1,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Nopia spesial",
+        "calories_per_100g": 387.0,
+        "protein_g": 5.3,
+        "fat_g": 7.6,
+        "carbs_g": 74.3,
+        "fiber_g": 0.3
+    },
+    {
+        "food_name": "Onde-onde",
+        "calories_per_100g": 336.0,
+        "protein_g": 4.0,
+        "fat_g": 9.8,
+        "carbs_g": 57.9,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Padamaran",
+        "calories_per_100g": 171.0,
+        "protein_g": 3.9,
+        "fat_g": 8.9,
+        "carbs_g": 18.8,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Pastel",
+        "calories_per_100g": 307.0,
+        "protein_g": 4.5,
+        "fat_g": 13.3,
+        "carbs_g": 42.4,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Pulut",
+        "calories_per_100g": 216.0,
+        "protein_g": 2.6,
+        "fat_g": 3.1,
+        "carbs_g": 44.4,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Pundut nasi",
+        "calories_per_100g": 104.0,
+        "protein_g": 1.9,
+        "fat_g": 4.1,
+        "carbs_g": 15.1,
+        "fiber_g": 0.4
+    },
+    {
+        "food_name": "Putri selat",
+        "calories_per_100g": 163.0,
+        "protein_g": 2.2,
+        "fat_g": 6.5,
+        "carbs_g": 23.8,
+        "fiber_g": 0.0
+    },
+    {
+        "food_name": "Putu sopa",
+        "calories_per_100g": 215.0,
+        "protein_g": 3.3,
+        "fat_g": 4.1,
+        "carbs_g": 41.1,
+        "fiber_g": 0.0
+    }
+]
