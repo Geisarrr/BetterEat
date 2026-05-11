@@ -5,88 +5,94 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth; // Tambahkan ini untuk fungsi session login
 
 class AuthController extends Controller
 {
     /**
-     * 1. FUNGSI REGISTER (DAFTAR AKUN BARU)
+     * TAMPILAN FORM REGISTER
+     * Akan memanggil file resources/views/auth/register.blade.php
+     */
+    public function showRegisterForm()
+    {
+        return view('auth.register'); 
+    }
+
+    /**
+     * 1. FUNGSI REGISTER (ACTION)
      */
     public function register(Request $request)
     {
-        // Validasi input dari frontend
         $request->validate([
             'full_name' => 'required|string|max:255',
             'username'  => 'required|string|max:255|unique:users,username',
             'email'     => 'required|string|email|max:255|unique:users,email',
-            // 'confirmed' mengharuskan frontend mengirim input 'password_confirmation' yang isinya sama
             'password'  => 'required|string|min:8|confirmed', 
         ]);
 
-        // Simpan data user baru ke database
         $user = User::create([
             'full_name'     => $request->full_name,
             'username'      => $request->username,
             'email'         => $request->email,
-            'password_hash' => Hash::make($request->password), // Enkripsi password
-            'role'          => 'user', // Set default role sebagai user
+            'password_hash' => Hash::make($request->password), 
+            'role'          => 'user',
+            'profile_photo' => null, 
         ]);
 
-        // Buat kunci akses (Token API) via Sanctum
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // Otomatis login-kan user menggunakan Session setelah register berhasil
+        Auth::login($user);
 
-        return response()->json([
-            'message'      => 'Registrasi berhasil!',
-            'access_token' => $token,
-            'token_type'   => 'Bearer',
-            'user'         => $user
-        ], 201); // 201 adalah status HTTP untuk "Created"
+        // Redirect ke halaman dashboard (atau halaman lain) dengan pesan sukses
+        return redirect()->intended('/dashboard')
+                         ->with('success', 'Registrasi berhasil! Selamat datang di BetterEat.');
     }
 
     /**
-     * 2. FUNGSI LOGIN (MASUK AKUN)
+     * TAMPILAN FORM LOGIN
+     * Akan memanggil file resources/views/auth/login.blade.php
+     */
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    /**
+     * 2. FUNGSI LOGIN (ACTION)
      */
     public function login(Request $request)
     {
-        // Validasi input
-        $request->validate([
+        $credentials = $request->validate([
             'email'    => 'required|email',
             'password' => 'required',
         ]);
 
-        // Cari user berdasarkan email
-        $user = User::where('email', $request->email)->first();
+        // Auth::attempt akan mengecek email dan password, lalu membuat Session jika benar
+        // Karena di Model User sudah pakai getAuthPassword(), Laravel otomatis baca kolom 'password_hash'
+        if (Auth::attempt($credentials)) {
+            // Mencegah serangan Session Fixation
+            $request->session()->regenerate();
 
-        // Cek kecocokan email dan hash password
-        if (!$user || !Hash::check($request->password, $user->password_hash)) {
-            return response()->json([
-                'message' => 'Email atau Password salah!'
-            ], 401); // 401 adalah status HTTP untuk "Unauthorized"
+            return redirect()->intended('/dashboard')
+                             ->with('success', 'Login berhasil! Siap pantau nutrisi hari ini?');
         }
 
-        // Hapus token lama jika ada (opsional, jika ingin 1 akun 1 device aktif)
-        // $user->tokens()->delete(); 
-
-        // Buat token baru
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'message'      => 'Login berhasil!',
-            'access_token' => $token,
-            'token_type'   => 'Bearer',
-            'user'         => $user
-        ]);
+        // Jika login gagal, kembalikan user ke halaman form login membawa pesan error
+        return back()->withErrors([
+            'email' => 'Email atau Password salah!',
+        ])->onlyInput('email'); // Mempertahankan isi input email biar gak usah ketik ulang
     }
 
     /**
-     * 3. FUNGSI LOGOUT (KELUAR AKUN)
+     * 3. FUNGSI LOGOUT (ACTION)
      */
     public function logout(Request $request)
     {
-        // Hapus token yang sedang digunakan saat request ini terjadi
-        $request->user()->currentAccessToken()->delete();
+        Auth::logout();
 
-        return response()->json([
-            'message' => 'Logout berhasil!'
-        ]);
+        // Hapus dan reset sesi demi keamanan
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login')->with('success', 'Logout berhasil. Jaga pola makanmu ya!');
     }
 }

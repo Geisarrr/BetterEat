@@ -13,10 +13,28 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('image_url')->nullable();
-            $table->decimal('calories', 8, 2);
-            $table->decimal('budget_estimate', 10, 2);
-            $table->text('cooking_steps');
-            $table->timestamp('created_at')->useCurrent();
+            
+            // --- KOLOM GIZI (Macro & Micro) ---
+            $table->decimal('calories', 8, 2)->default(0);
+            $table->decimal('protein_g', 8, 2)->default(0);
+            $table->decimal('fat_g', 8, 2)->default(0);
+            $table->decimal('carbs_g', 8, 2)->default(0);
+            $table->decimal('sugar_g', 8, 2)->default(0); // Krusial untuk Diabetes
+            $table->decimal('fiber_g', 8, 2)->default(0); // Bagus untuk pencernaan & gula darah
+            
+            // --- SISTEM TAGGING & KESEHATAN ---
+            // 'Low', 'Medium', 'High' untuk panduan penderita diabetes
+            $table->enum('glycemic_index', ['Low', 'Medium', 'High'])->default('Low'); 
+            // Kategori utama: 'Diabetes', 'Hypertension', 'Fitness', 'General'
+            $table->string('category')->default('General'); 
+
+            // --- DETAIL MASAKAN & BUDGET ---
+            $table->decimal('budget_estimate', 10, 2)->default(0);
+            $table->integer('prep_time_minutes')->nullable();
+            $table->text('ingredients'); 
+            $table->text('cooking_steps'); 
+            
+            $table->timestamps(); 
         });
     }
 

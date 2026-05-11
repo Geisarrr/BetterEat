@@ -3,76 +3,104 @@
 namespace App\Http\Controllers;
 
 use App\Models\RecipeIngredient;
+use App\Models\Recipe; // Wajib ditambahkan untuk form dropdown
+use App\Models\FoodNutritionTkpi; // Wajib ditambahkan untuk form dropdown
 use Illuminate\Http\Request;
 
 class RecipeIngredientController extends Controller
 {
+    /**
+     * [READ] Menampilkan semua data relasi bahan makanan
+     */
     public function index()
     {
-        // [READ] Menampilkan semua bahan beserta data resep dan detail makanannya
         $ingredients = RecipeIngredient::with(['recipe', 'food'])->get();
-        return response()->json($ingredients);
+        
+        // Melempar data ke resources/views/recipe_ingredients/index.blade.php
+        return view('recipe_ingredients.index', compact('ingredients'));
     }
 
+    /**
+     * TAMPILAN FORM TAMBAH BAHAN KE RESEP
+     */
     public function create()
     {
-        // Form HTML
+        // Mengambil semua data resep dan makanan TKPI agar FE bisa membuat dropdown
+        $recipes = Recipe::all();
+        $foods = FoodNutritionTkpi::all();
+        
+        return view('recipe_ingredients.create', compact('recipes', 'foods'));
     }
 
+    /**
+     * [CREATE] Menyimpan bahan makanan ke dalam resep
+     */
     public function store(Request $request)
     {
-        // [CREATE] Menyimpan bahan makanan ke dalam resep tertentu
         $request->validate([
             'recipe_id'     => 'required|exists:recipes,recipe_id',
             'food_id'       => 'required|exists:food_nutrition_tkpi,food_id',
-            'quantity_gram' => 'required|numeric|min:0',
+            'quantity_gram' => 'required|numeric|min:0.1', // Diubah ke 0.1 agar lebih logis untuk berat
         ]);
 
-        $ingredient = RecipeIngredient::create($request->all());
+        RecipeIngredient::create($request->all());
 
-        return response()->json([
-            'message' => 'Bahan makanan berhasil ditambahkan ke resep!',
-            'data'    => $ingredient
-        ]);
+        // Menggunakan back() agar admin tetap berada di halaman form yang sama
+        // Sangat berguna kalau admin mau input banyak bahan sekaligus untuk satu resep
+        return back()->with('success', 'Bahan makanan berhasil ditambahkan ke resep!');
     }
 
+    /**
+     * [READ] Menampilkan detail satu relasi bahan
+     */
     public function show(string $id)
     {
-        // [READ] Menampilkan detail satu relasi bahan beserta data resep dan makanannya
         $ingredient = RecipeIngredient::with(['recipe', 'food'])->findOrFail($id);
-        return response()->json($ingredient);
+        
+        return view('recipe_ingredients.show', compact('ingredient'));
     }
 
+    /**
+     * TAMPILAN FORM EDIT BAHAN
+     */
     public function edit(string $id)
     {
-        // Form HTML
+        $ingredient = RecipeIngredient::findOrFail($id);
+        $recipes = Recipe::all();
+        $foods = FoodNutritionTkpi::all();
+        
+        return view('recipe_ingredients.edit', compact('ingredient', 'recipes', 'foods'));
     }
 
+    /**
+     * [UPDATE] Memperbarui relasi bahan (misal mengubah takaran gram)
+     */
     public function update(Request $request, string $id)
     {
-        // [UPDATE] Memperbarui relasi bahan (misal mengubah takaran gram)
         $ingredient = RecipeIngredient::findOrFail($id);
 
         $request->validate([
-            'recipe_id'     => 'sometimes|required|exists:recipes,recipe_id',
-            'food_id'       => 'sometimes|required|exists:food_nutrition_tkpi,food_id',
-            'quantity_gram' => 'sometimes|required|numeric|min:0',
+            'recipe_id'     => 'required|exists:recipes,recipe_id',
+            'food_id'       => 'required|exists:food_nutrition_tkpi,food_id',
+            'quantity_gram' => 'required|numeric|min:0.1',
         ]);
 
         $ingredient->update($request->all());
 
-        return response()->json([
-            'message' => 'Detail bahan makanan berhasil diupdate!',
-            'data'    => $ingredient
-        ]);
+        // Setelah selesai mengedit, arahkan admin kembali ke daftar bahan
+        return redirect()->route('recipe_ingredients.index')
+                         ->with('success', 'Detail takaran bahan makanan berhasil diupdate!');
     }
 
+    /**
+     * [DELETE] Menghapus bahan dari resep
+     */
     public function destroy(string $id)
     {
-        // [DELETE] Menghapus bahan dari resep
         $ingredient = RecipeIngredient::findOrFail($id);
         $ingredient->delete();
 
-        return response()->json(['message' => 'Bahan makanan berhasil dihapus dari resep!']);
+        // Tetap di halaman yang sama setelah menghapus
+        return back()->with('success', 'Bahan makanan berhasil dihapus dari resep!');
     }
 }

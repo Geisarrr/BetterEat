@@ -2,34 +2,41 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens; // 1. Wajib tambahkan ini untuk Token API
+// use Laravel\Sanctum\HasApiTokens; -> Baris ini kita hapus
 
 class User extends Authenticatable
 {
-    // 2. Tambahkan HasApiTokens di sini
-    use HasApiTokens, HasFactory, Notifiable;
+    // HasApiTokens kita hapus dari sini, sisakan HasFactory dan Notifiable
+    use HasFactory, Notifiable; 
 
+    /**
+     * Mengarahkan Primary Key ke 'user_id' sesuai skema tabel users.
+     */
     protected $primaryKey = 'user_id';
 
-    // 3. Matikan fitur updated_at karena di tabel users kita hanya punya created_at
-    const UPDATED_AT = null;
+    /**
+     * Menonaktifkan updated_at jika tabel hanya memiliki created_at.
+     */
+    public $timestamps = true; 
+    const UPDATED_AT = null; 
 
     protected $fillable = [
         'full_name',
         'username',
         'email',
-        'password_hash', // 4. Ubah dari 'password' menjadi 'password_hash'
+        'password_hash',
         'role',
         'profile_photo',
-        'is_active',     // Tambahan sesuai tabel ERD
     ];
 
+    /**
+     * Menyembunyikan password_hash demi keamanan (meskipun tidak pakai JSON lagi, ini tetap Best Practice).
+     */
     protected $hidden = [
-        'password_hash', // 5. Ubah dari 'password'
+        'password_hash',
         'remember_token',
     ];
 
@@ -37,13 +44,12 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            // Bagian 'password' => 'hashed' dihapus karena kita melakukan Hash manual di Controller
         ];
     }
 
     /**
-     * 6. Method Overriding untuk mengarahkan fitur Auth bawaan Laravel
-     * agar membaca kolom 'password_hash' dan bukan 'password'.
+     * SANGAT PENTING: Memberitahu Laravel bahwa kolom password bernama 'password_hash'.
+     * Ini jantungnya sistem login (Auth::attempt) kita sekarang.
      */
     public function getAuthPassword()
     {

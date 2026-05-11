@@ -12,17 +12,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Membuat User testing pertama untuk login/trial di Thunder Client
+        // 1. Membuat User testing (Penting buat ngetes Login API nanti)
         User::factory()->create([
             'full_name' => 'Test User',
             'username'  => 'testuser',
             'email'     => 'test@example.com',
-            'role'      => 'user', // Memastikan sesuai dengan enum ['user', 'admin']
+            'role'      => 'user',
         ]);
         
-        // Memanggil Seeder TKPI untuk mengisi 100 data gizi makanan
+        // 2. Memanggil Seeder lainnya
         $this->call([
-            TkpiSeeder::class,
+            TkpiSeeder::class,   // Data gizi dasar (100 data)
+            RecipeSeeder::class, // Resep Diabetes, Fitness, & Jantung (Data rekomendasi)
         ]);
     }
 }

@@ -7,21 +7,22 @@ use Illuminate\Http\Request;
 
 class RecipeDiseaseCategoryController extends Controller
 {
+    /**
+     * [READ] Menampilkan daftar relasi (Opsional, untuk tabel admin)
+     */
     public function index()
     {
-        // [READ] Menampilkan semua data relasi beserta detail resep dan kategorinya
         $relations = RecipeDiseaseCategory::with(['recipe', 'category'])->get();
-        return response()->json($relations);
+        
+        // Melempar data ke resources/views/recipe_categories/index.blade.php
+        return view('recipe_categories.index', compact('relations'));
     }
 
-    public function create()
-    {
-        // Form HTML
-    }
-
+    /**
+     * [CREATE] Memasang Kategori Penyakit ke Resep (Attach)
+     */
     public function store(Request $request)
     {
-        // [CREATE] Menghubungkan Resep dengan Kategori Penyakit
         $request->validate([
             'recipe_id'   => 'required|exists:recipes,recipe_id',
             'category_id' => 'required|exists:disease_categories,category_id',
@@ -33,48 +34,24 @@ class RecipeDiseaseCategoryController extends Controller
                                        ->first();
 
         if ($exists) {
-            return response()->json(['message' => 'Relasi ini sudah ada!'], 400);
+            // Gunakan withErrors untuk mengirim pesan gagal ke Blade
+            return back()->withErrors(['category_id' => 'Resep ini sudah memiliki kategori tersebut!']);
         }
 
-        $relation = RecipeDiseaseCategory::create($request->all());
-
-        return response()->json([
-            'message' => 'Resep berhasil dihubungkan dengan kategori!',
-            'data'    => $relation
-        ]);
-    }
-
-    public function show(Request $request)
-    {
-        // [READ] Kita tidak menggunakan string $id, melainkan mencari berdasarkan dua parameter
-        $request->validate([
-            'recipe_id'   => 'required|integer',
-            'category_id' => 'required|integer',
+        RecipeDiseaseCategory::create([
+            'recipe_id'   => $request->recipe_id,
+            'category_id' => $request->category_id,
         ]);
 
-        $relation = RecipeDiseaseCategory::with(['recipe', 'category'])
-                        ->where('recipe_id', $request->recipe_id)
-                        ->where('category_id', $request->category_id)
-                        ->firstOrFail();
-
-        return response()->json($relation);
+        // Redirect back agar halaman me-refresh secara instan di tempat admin berada
+        return back()->with('success', 'Kategori berhasil ditambahkan ke resep!');
     }
 
-    public function edit(string $id)
-    {
-        // Form HTML
-    }
-
-    public function update(Request $request, string $id)
-    {
-        // [UPDATE] Pada tabel pivot, update biasanya jarang digunakan. 
-        // Praktik terbaik adalah menghapus (destroy) relasi lama dan membuat (store) yang baru.
-        return response()->json(['message' => 'Gunakan metode delete dan create untuk mengubah relasi pivot.'], 405);
-    }
-
+    /**
+     * [DELETE] Melepas Relasi Kategori dari Resep (Detach)
+     */
     public function destroy(Request $request)
     {
-        // [DELETE] Menghapus relasi berdasarkan kombinasi kedua ID
         $request->validate([
             'recipe_id'   => 'required|integer',
             'category_id' => 'required|integer',
@@ -85,9 +62,9 @@ class RecipeDiseaseCategoryController extends Controller
                                         ->delete();
 
         if ($deleted) {
-            return response()->json(['message' => 'Relasi berhasil dihapus!']);
+            return back()->with('success', 'Kategori berhasil dilepas dari resep!');
         }
 
-        return response()->json(['message' => 'Data relasi tidak ditemukan!'], 404);
+        return back()->withErrors(['message' => 'Data relasi tidak ditemukan!']);
     }
 }

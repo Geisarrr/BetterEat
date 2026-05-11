@@ -3,37 +3,36 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth; // Wajib dipanggil untuk Session
 use App\Models\CalorieLog;
 use Illuminate\Http\Request;
 
 class CalorieLogController extends Controller
 {
+    /**
+     * [READ] Menampilkan riwayat kalori milik user yang sedang login
+     */
     public function index(Request $request)
     {
-        // [READ] Menampilkan log kalori, difilter berdasarkan user_id jika ada
-        $userId = $request->query('user_id');
+        // Langsung ambil ID dari user yang sedang login di browser
+        $userId = Auth::id();
 
-        $query = CalorieLog::with(['food']);
+        $logs = CalorieLog::with(['food'])
+            ->where('user_id', $userId)
+            ->orderBy('logged_at', 'desc')
+            ->get();
 
-        if ($userId) {
-            $query->where('user_id', $userId);
-        }
-
-        // Urutkan dari yang paling baru dimakan
-        $logs = $query->orderBy('logged_at', 'desc')->get();
-
-        return response()->json([
-            'message'    => 'Riwayat kalori berhasil diambil',
-            'total_logs' => $logs->count(),
-            'data'       => $logs
-        ]);
+        // Lempar data ke file resources/views/calorie-logs/index.blade.php
+        return view('calorie_logs.index', compact('logs'));
     }
 
+    /**
+     * [CREATE] Menambahkan catatan kalori baru dari form
+     */
     public function store(Request $request)
     {
-        // [CREATE] Menambahkan log baru
         $request->validate([
-            'user_id'       => 'required|exists:users,user_id', 
+            // user_id dihapus dari validasi form karena kita ambil langsung dari Auth (lebih aman)
             'food_id'       => 'required|exists:food_nutrition_tkpi,food_id',
             'quantity_gram' => 'required|numeric|min:0.1',
             'logged_at'     => 'nullable|date',
@@ -43,7 +42,7 @@ class CalorieLogController extends Controller
         $multiplier = $request->quantity_gram / 100;
 
         $logData = [
-            'user_id'       => $request->user_id,
+            'user_id'       => Auth::id(), // Ambil ID otomatis
             'food_id'       => $request->food_id,
             'quantity_gram' => $request->quantity_gram,
             'logged_at'     => $request->logged_at ?? now(),
@@ -53,25 +52,39 @@ class CalorieLogController extends Controller
             'carbs_g'       => $food->carbs_g * $multiplier,
         ];
 
-        $log = CalorieLog::create($logData);
+        CalorieLog::create($logData);
 
-        return response()->json([
-            'message' => 'Catatan kalori dan nutrisi berhasil dihitung & ditambahkan!',
-            'data'    => $log
-        ], 201);
+        // Kembalikan user ke halaman sebelumnya dengan pesan sukses
+        return back()->with('success', 'Catatan makanan berhasil ditambahkan ke jurnalmu!');
     }
 
-    public function show(string $id)
+    /**
+     * [READ] (Opsional) Menampilkan halaman edit untuk satu log tertentu
+     */
+    public function edit(string $id)
     {
-        // [READ] Menampilkan satu catatan spesifik
-        $log = CalorieLog::with(['user:user_id,full_name', 'food'])->findOrFail($id);
-        return response()->json($log);
+        $log = CalorieLog::with('food')->findOrFail($id);
+
+        // Keamanan: Cek apakah log ini benar-benar milik user yang sedang login
+        if ($log->user_id !== Auth::id()) {
+            abort(403, 'Akses ditolak. Ini bukan catatan Anda.');
+        }
+
+        // Lempar ke file resources/views/calorie_logs/edit.blade.php
+        return view('calorie_logs.edit', compact('log'));
     }
 
+    /**
+     * [UPDATE] Menyimpan perubahan dari form edit
+     */
     public function update(Request $request, string $id)
     {
-        // [UPDATE] Mengubah catatan dan MENGHITUNG ULANG NUTRISI jika beratnya diganti
         $log = CalorieLog::findOrFail($id);
+
+        // Keamanan ekstra
+        if ($log->user_id !== Auth::id()) {
+            abort(403, 'Akses ditolak.');
+        }
 
         $request->validate([
             'food_id'       => 'sometimes|required|exists:food_nutrition_tkpi,food_id',
@@ -79,21 +92,16 @@ class CalorieLogController extends Controller
             'logged_at'     => 'sometimes|required|date',
         ]);
 
-        // Cek apakah user mengubah jenis makanan atau berat gram-nya
         $needsRecalculation = $request->has('food_id') || $request->has('quantity_gram');
-
-        // Siapkan data yang akan di-update
         $updateData = $request->only(['food_id', 'quantity_gram', 'logged_at']);
 
         if ($needsRecalculation) {
-            // Gunakan data baru dari request, atau pakai data lama jika tidak diubah
             $foodId = $request->food_id ?? $log->food_id;
             $quantity = $request->quantity_gram ?? $log->quantity_gram;
 
             $food = DB::table('food_nutrition_tkpi')->where('food_id', $foodId)->first();
             $multiplier = $quantity / 100;
 
-            // Hitung ulang gizinya
             $updateData['calories']  = $food->calories_per_100g * $multiplier;
             $updateData['protein_g'] = $food->protein_g * $multiplier;
             $updateData['fat_g']     = $food->fat_g * $multiplier;
@@ -102,35 +110,36 @@ class CalorieLogController extends Controller
 
         $log->update($updateData);
 
-        return response()->json([
-            'message' => 'Catatan kalori berhasil diperbarui dan dihitung ulang!',
-            'data'    => $log
-        ]);
+        // Redirect ke halaman index setelah selesai update
+        return redirect()->route('calorie_logs.index')->with('success', 'Catatan kalori berhasil diperbarui!');
     }
 
+    /**
+     * [DELETE] Menghapus catatan kalori lewat tombol hapus
+     */
     public function destroy(string $id)
     {
-        // [DELETE] Menghapus catatan kalori
         $log = CalorieLog::findOrFail($id);
-        $log->delete();
 
-        return response()->json(['message' => 'Catatan kalori berhasil dihapus!']);
-    }
-
-    // --- FITUR BARU: REKAP HARIAN ---
-    public function summary(Request $request)
-    {
-        // [READ] Menampilkan rekap total gizi harian user
-        $userId = $request->query('user_id');
-        
-        // Ambil tanggal dari parameter, kalau kosong otomatis pakai tanggal hari ini
-        $date = $request->query('date', now()->toDateString()); 
-
-        if (!$userId) {
-            return response()->json(['message' => 'User ID diperlukan'], 400);
+        // Keamanan ekstra
+        if ($log->user_id !== Auth::id()) {
+            abort(403, 'Akses ditolak.');
         }
 
-        // Query menjumlahkan semua kolom gizi di hari tersebut
+        $log->delete();
+
+        return back()->with('success', 'Catatan kalori berhasil dihapus!');
+    }
+
+    /**
+     * --- FITUR BARU: REKAP HARIAN ---
+     * Sangat cocok ditaruh di Dashboard user!
+     */
+    public function summary(Request $request)
+    {
+        $userId = Auth::id(); // Langsung ambil dari session
+        $date = $request->query('date', now()->toDateString()); 
+
         $totals = CalorieLog::where('user_id', $userId)
                     ->whereDate('logged_at', $date)
                     ->selectRaw('
@@ -141,23 +150,13 @@ class CalorieLogController extends Controller
                     ')
                     ->first();
 
-        // Ambil daftar log makanannya sebagai rincian
         $logs = CalorieLog::with(['food'])
                     ->where('user_id', $userId)
                     ->whereDate('logged_at', $date)
                     ->orderBy('logged_at', 'desc')
                     ->get();
 
-        return response()->json([
-            'message' => "Ringkasan gizi untuk tanggal {$date}",
-            'date'    => $date,
-            'summary' => [
-                'total_calories' => $totals->total_calories ?? 0,
-                'total_protein'  => $totals->total_protein ?? 0,
-                'total_fat'      => $totals->total_fat ?? 0,
-                'total_carbs'    => $totals->total_carbs ?? 0,
-            ],
-            'detail_logs' => $logs
-        ]);
+        // Lempar data summary ini ke view (misal ke dashboard utama)
+        return view('calorie_logs.summary', compact('date', 'totals', 'logs'));
     }
 }
