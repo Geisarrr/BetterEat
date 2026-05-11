@@ -8,86 +8,115 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * [READ] Menampilkan halaman daftar semua user (Khusus Admin)
+     */
     public function index()
     {
-        // [READ] Menampilkan semua data user
-        $users = User::all();
-        return response()->json($users);
+        // latest() agar user yang baru daftar muncul paling atas
+        $users = User::latest()->get(); 
+        
+        // Melempar data ke resources/views/users/index.blade.php
+        return view('users.index', compact('users'));
     }
 
+    /**
+     * TAMPILAN FORM TAMBAH USER (Oleh Admin)
+     */
     public function create()
     {
-        // Menampilkan form tambah user (hanya dipakai jika menggunakan Blade/HTML)
+        // Melempar ke resources/views/users/create.blade.php
+        return view('users.create');
     }
 
+    /**
+     * [CREATE] Menyimpan data user/admin baru dari form panel admin
+     */
     public function store(Request $request)
     {
-        // [CREATE] Menyimpan data user baru ke database
         $request->validate([
             'full_name' => 'required|string|max:255',
-            'username'  => 'required|string|unique:users',
-            'email'     => 'required|string|email|unique:users',
+            'username'  => 'required|string|unique:users,username',
+            'email'     => 'required|string|email|unique:users,email',
             'password'  => 'required|string|min:8',
+            'role'      => 'required|in:user,admin', // Tambahan: Biar admin bisa nentuin dia bikin akun 'user' atau 'admin'
         ]);
 
-        $user = User::create([
+        User::create([
+            'full_name'     => $request->full_name,
+            'username'      => $request->username,
+            'email'         => $request->email,
+            'password_hash' => Hash::make($request->password), // Sesuaikan dengan kolom databasemu
+            'role'          => $request->role, 
+        ]);
+
+        return redirect()->route('users.index')
+                         ->with('success', 'Akun pengguna berhasil ditambahkan!');
+    }
+
+    /**
+     * [READ] Menampilkan detail spesifik satu user
+     */
+    public function show(string $id)
+    {
+        $user = User::findOrFail($id);
+        
+        return view('users.show', compact('user'));
+    }
+
+    /**
+     * TAMPILAN FORM EDIT USER (Oleh Admin)
+     */
+    public function edit(string $id)
+    {
+        $user = User::findOrFail($id);
+        
+        return view('users.edit', compact('user'));
+    }
+
+    /**
+     * [UPDATE] Logika untuk memperbarui data user dari panel admin
+     */
+    public function update(Request $request, string $id)
+    {
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'full_name' => 'required|string|max:255',
+            // Pengecualian unique ID agar admin bisa simpan form tanpa error "email sudah dipakai"
+            'username'  => 'required|string|unique:users,username,' . $id . ',user_id',
+            'email'     => 'required|string|email|unique:users,email,' . $id . ',user_id',
+            'password'  => 'nullable|string|min:8', // Opsional, hanya diisi kalau admin mau reset password user
+            'role'      => 'required|in:user,admin',
+        ]);
+
+        // Siapkan data yang pasti diupdate
+        $updateData = [
             'full_name' => $request->full_name,
             'username'  => $request->username,
             'email'     => $request->email,
-            'password'  => Hash::make($request->password), 
-            'role'      => 'user', 
-        ]);
+            'role'      => $request->role,
+        ];
 
-        return response()->json(['message' => 'User berhasil dibuat!', 'data' => $user]);
-    }
-
-    public function show(string $id)
-    {
-        // [READ] Menampilkan detail spesifik satu user
-        $user = User::findOrFail($id);
-        return response()->json($user);
-    }
-
-    public function edit(string $id)
-    {
-        // Menampilkan form edit user (hanya dipakai jika menggunakan Blade/HTML)
-    }
-
-    public function update(Request $request, string $id)
-    {
-        // [UPDATE] Logika untuk memperbarui data user
-        $user = User::findOrFail($id);
-
-        // Validasi data yang masuk
-        // Catatan: 'user_id' ditambahkan di rule unique agar sistem tahu kolom Primary Key-nya apa
-        $request->validate([
-            'full_name' => 'sometimes|required|string|max:255',
-            'username'  => 'sometimes|required|string|unique:users,username,' . $id . ',user_id',
-            'email'     => 'sometimes|required|string|email|unique:users,email,' . $id . ',user_id',
-            'password'  => 'sometimes|nullable|string|min:8', // Password opsional saat update
-        ]);
-
-        // Update data jika ada perubahan yang dikirim
-        if ($request->has('full_name')) $user->full_name = $request->full_name;
-        if ($request->has('username')) $user->username = $request->username;
-        if ($request->has('email')) $user->email = $request->email;
-        
-        // Update password hanya jika user mengisi kolom password baru
+        // Update password_hash HANYA jika form password tidak dikosongkan
         if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+            $updateData['password_hash'] = Hash::make($request->password);
         }
 
-        $user->save();
+        $user->update($updateData);
 
-        return response()->json(['message' => 'User berhasil diupdate!', 'data' => $user]);
+        return redirect()->route('users.index')
+                         ->with('success', 'Data pengguna berhasil diperbarui!');
     }
 
+    /**
+     * [DELETE] Menghapus akun user (Banned / Hapus Permanen)
+     */
     public function destroy(string $id)
     {
-        // [DELETE] Menghapus user
         $user = User::findOrFail($id);
         $user->delete();
         
-        return response()->json(['message' => 'User berhasil dihapus!']);
+        return back()->with('success', 'Akun pengguna berhasil dihapus!');
     }
 }

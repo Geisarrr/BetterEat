@@ -7,17 +7,29 @@ use Illuminate\Http\Request;
 
 class FoodNutritionTkpiController extends Controller
 {
+    /**
+     * [READ] Menampilkan halaman daftar semua nutrisi makanan
+     */
     public function index()
     {
         $foods = FoodNutritionTkpi::all();
-        return response()->json($foods);
+        
+        // Lempar data ke resources/views/food_nutrition/index.blade.php
+        return view('food_nutrition.index', compact('foods'));
     }
 
+    /**
+     * TAMPILAN FORM TAMBAH DATA
+     */
     public function create()
     {
-        // Form HTML
+        // Lempar ke resources/views/food_nutrition/create.blade.php
+        return view('food_nutrition.create');
     }
 
+    /**
+     * [CREATE] Menyimpan data nutrisi baru
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -29,51 +41,66 @@ class FoodNutritionTkpiController extends Controller
             'fiber_g'           => 'required|numeric',
         ]);
 
-        $food = FoodNutritionTkpi::create($request->all());
+        FoodNutritionTkpi::create($request->all());
 
-        return response()->json([
-            'message' => 'Data nutrisi makanan berhasil ditambahkan!',
-            'data'    => $food
-        ]);
+        // Redirect ke halaman index dengan pesan sukses
+        return redirect()->route('food_nutrition.index')
+                         ->with('success', 'Data nutrisi makanan berhasil ditambahkan!');
     }
 
+    /**
+     * [READ] Menampilkan detail satu makanan
+     */
     public function show(string $id)
     {
         $food = FoodNutritionTkpi::findOrFail($id);
-        return response()->json($food);
+        
+        // Lempar ke resources/views/food_nutrition/show.blade.php
+        return view('food_nutrition.show', compact('food'));
     }
 
+    /**
+     * TAMPILAN FORM EDIT DATA
+     */
     public function edit(string $id)
     {
-        // Form edit HTML
+        $food = FoodNutritionTkpi::findOrFail($id);
+        
+        // Lempar ke resources/views/food_nutrition/edit.blade.php
+        return view('food_nutrition.edit', compact('food'));
     }
 
+    /**
+     * [UPDATE] Menyimpan perubahan data nutrisi
+     */
     public function update(Request $request, string $id)
     {
         $food = FoodNutritionTkpi::findOrFail($id);
 
         $request->validate([
-            'food_name'         => 'sometimes|required|string|max:255',
-            'calories_per_100g' => 'sometimes|required|numeric',
-            'protein_g'         => 'sometimes|required|numeric',
-            'fat_g'             => 'sometimes|required|numeric',
-            'carbs_g'           => 'sometimes|required|numeric',
-            'fiber_g'           => 'sometimes|required|numeric',
+            'food_name'         => 'required|string|max:255',
+            'calories_per_100g' => 'required|numeric',
+            'protein_g'         => 'required|numeric',
+            'fat_g'             => 'required|numeric',
+            'carbs_g'           => 'required|numeric',
+            'fiber_g'           => 'required|numeric',
         ]);
 
         $food->update($request->all());
 
-        return response()->json([
-            'message' => 'Data nutrisi makanan berhasil diupdate!',
-            'data'    => $food
-        ]);
+        // Redirect ke halaman index setelah update
+        return redirect()->route('food_nutrition.index')
+                         ->with('success', 'Data nutrisi makanan berhasil diupdate!');
     }
 
+    /**
+     * [DELETE] Menghapus data nutrisi
+     */
     public function destroy(string $id)
     {
         $food = FoodNutritionTkpi::findOrFail($id);
         $food->delete();
         
-        return response()->json(['message' => 'Data nutrisi berhasil dihapus!']);
+        return back()->with('success', 'Data nutrisi berhasil dihapus!');
     }
 }

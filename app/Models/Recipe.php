@@ -11,16 +11,11 @@ class Recipe extends Model
 
     protected $table = 'recipes';
     protected $primaryKey = 'recipe_id';
-    
-    // Matikan fitur updated_at karena di migration hanya ada created_at
-    const UPDATED_AT = null;
 
     protected $fillable = [
-        'name',
-        'description',
-        'image_url',
-        'calories',
-        'budget_estimate',
-        'cooking_steps',
+        'name', 'description', 'image_url', 'calories', 'protein_g', 
+        'fat_g', 'carbs_g', 'sugar_g', 'fiber_g', 'glycemic_index', 
+        'category', 'budget_estimate', 'prep_time_minutes', 
+        'ingredients', 'cooking_steps'
     ];
 }

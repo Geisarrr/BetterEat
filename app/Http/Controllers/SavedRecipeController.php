@@ -3,84 +3,61 @@
 namespace App\Http\Controllers;
 
 use App\Models\SavedRecipe;
+use App\Models\Recipe; // Tambahkan ini untuk validasi resep
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // Wajib untuk keamanan sesi
 
 class SavedRecipeController extends Controller
 {
+    /**
+     * [READ] Menampilkan halaman daftar koleksi resep milik user yang sedang login
+     */
     public function index()
     {
-        // [READ] Menampilkan semua data resep yang disimpan beserta detail user & resepnya
-        $savedRecipes = SavedRecipe::with(['user', 'recipe'])->get();
-        return response()->json($savedRecipes);
+        // Ambil ID user dari sesi login
+        $userId = Auth::id();
+
+        // Ambil data simpanan HANYA milik user tersebut, beserta detail resepnya
+        $savedRecipes = SavedRecipe::with('recipe')
+                                   ->where('user_id', $userId)
+                                   ->latest()
+                                   ->get();
+
+        // Lempar ke resources/views/saved_recipes/index.blade.php
+        return view('saved_recipes.index', compact('savedRecipes'));
     }
 
-    public function create()
+    /**
+     * [ACTION] Toggle Save / Unsave
+     * Fungsi ini menggantikan create, store, edit, update, dan destroy.
+     * Cukup 1 fungsi untuk 2 aksi (Simpan / Hapus Simpanan).
+     */
+    public function toggle($recipeId)
     {
-        // Form HTML
-    }
+        // 1. Pastikan resep yang mau disimpan itu beneran ada di database
+        $recipe = Recipe::findOrFail($recipeId);
+        
+        // 2. Ambil ID user yang lagi login
+        $userId = Auth::id();
 
-    public function store(Request $request)
-    {
-        // [CREATE] Menyimpan resep ke daftar favorit user
-        $request->validate([
-            'user_id'   => 'required|exists:users,user_id',
-            'recipe_id' => 'required|exists:recipes,recipe_id',
-        ]);
-
-        // Cek apakah user sudah pernah menyimpan resep ini sebelumnya
-        $alreadySaved = SavedRecipe::where('user_id', $request->user_id)
-                                   ->where('recipe_id', $request->recipe_id)
+        // 3. Cek apakah resep ini sudah ada di daftar simpanan user
+        $existingSave = SavedRecipe::where('user_id', $userId)
+                                   ->where('recipe_id', $recipeId)
                                    ->first();
 
-        if ($alreadySaved) {
-            return response()->json(['message' => 'Resep ini sudah ada di daftar simpanan kamu!'], 400);
+        if ($existingSave) {
+            // [UNSAVE] Jika sudah ada, berarti user klik tombol untuk menghapus bookmark
+            $existingSave->delete();
+            
+            return back()->with('success', 'Resep dihapus dari koleksi simpananmu.');
+        } else {
+            // [SAVE] Jika belum ada, simpan resep tersebut
+            SavedRecipe::create([
+                'user_id'   => $userId,
+                'recipe_id' => $recipeId,
+            ]);
+            
+            return back()->with('success', 'Mantap! Resep berhasil disimpan ke koleksimu.');
         }
-
-        $savedRecipe = SavedRecipe::create($request->all());
-
-        return response()->json([
-            'message' => 'Resep berhasil disimpan!',
-            'data'    => $savedRecipe
-        ]);
-    }
-
-    public function show(string $id)
-    {
-        // [READ] Menampilkan detail spesifik satu data simpanan
-        $savedRecipe = SavedRecipe::with(['user', 'recipe'])->findOrFail($id);
-        return response()->json($savedRecipe);
-    }
-
-    public function edit(string $id)
-    {
-        // Form HTML
-    }
-
-    public function update(Request $request, string $id)
-    {
-        // [UPDATE] Secara logika bisnis, fitur bookmark jarang di-update. 
-        // Namun fungsi ini tetap disiapkan sesuai standar CRUD.
-        $savedRecipe = SavedRecipe::findOrFail($id);
-
-        $request->validate([
-            'user_id'   => 'sometimes|required|exists:users,user_id',
-            'recipe_id' => 'sometimes|required|exists:recipes,recipe_id',
-        ]);
-
-        $savedRecipe->update($request->all());
-
-        return response()->json([
-            'message' => 'Data simpanan berhasil diperbarui!',
-            'data'    => $savedRecipe
-        ]);
-    }
-
-    public function destroy(string $id)
-    {
-        // [DELETE] Menghapus resep dari daftar simpanan (Unsave)
-        $savedRecipe = SavedRecipe::findOrFail($id);
-        $savedRecipe->delete();
-
-        return response()->json(['message' => 'Resep berhasil dihapus dari daftar simpanan!']);
     }
 }
