@@ -48,33 +48,59 @@
                     </h4>
 
                     <ul class="space-y-3 text-sm text-gray-500">
+
+                        {{-- Home --}}
                         <li>
                             <a href="{{ route('home') }}"
-                               class="hover:text-be-button transition font-bold">
+                            class="
+                                    transition hover:text-be-button
+                                    {{ request()->routeIs('home') 
+                                        ? 'text-be-button font-bold' 
+                                        : 'text-gray-500 font-medium' }}
+                            ">
                                 Home
                             </a>
                         </li>
 
+                        {{-- Resep Sehat --}}
                         <li>
                             <a href="{{ route('resep') }}"
-                               class="hover:text-be-button transition">
+                            class="
+                                    transition hover:text-be-button
+                                    {{ request()->routeIs('resep') 
+                                        ? 'text-be-button font-bold' 
+                                        : 'text-gray-500 font-medium' }}
+                            ">
                                 Resep Sehat
                             </a>
                         </li>
 
+                        {{-- Kalkulator --}}
                         <li>
                             <a href="{{ route('kalkulator') }}"
-                               class="hover:text-[be-button transition">
+                            class="
+                                    transition hover:text-be-button
+                                    {{ request()->routeIs('kalkulator') 
+                                        ? 'text-be-button font-bold' 
+                                        : 'text-gray-500 font-medium' }}
+                            ">
                                 Kalkulator Gizi
                             </a>
                         </li>
 
+                        {{-- Community --}}
                         <li>
                             <a href="{{ route('community') }}"
-                               class="hover:text-be-button transition">
+                            class="
+                                    transition hover:text-be-button
+                                    {{ request()->routeIs('community') 
+                                        ? 'text-be-button font-bold' 
+                                        : 'text-gray-500 font-medium' }}
+                            ">
                                 Community Hub
                             </a>
                         </li>
+
                     </ul>
                 </div>
 

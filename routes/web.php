@@ -1,10 +1,7 @@
 <?php
 
-<<<<<<< HEAD
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
-=======
->>>>>>> 971fb0aee4d2966d112356cd97ae54cc17d964c2
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -23,9 +20,9 @@ use App\Http\Controllers\RecipeDiseaseCategoryController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/resep', function () {
-    return view('resep');
-})->name('resep');
+Route::get('/resep', [RecipeController::class, 'index'])->name('resep');
+
+
 
 Route::get('/kalkulator', function () {
     return view('kalkulator');
@@ -34,13 +31,12 @@ Route::get('/kalkulator', function () {
 Route::get('/community', function () {
     return view('community');
 })->name('community');
-=======
+
 /*
 |--------------------------------------------------------------------------
 | 1. GUEST ROUTES (Bisa diakses sebelum login)
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () { return view('welcome'); });
 
 Route::middleware('guest')->group(function () {
     // Register
@@ -51,7 +47,6 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 });
->>>>>>> 971fb0aee4d2966d112356cd97ae54cc17d964c2
 
 /*
 |--------------------------------------------------------------------------
