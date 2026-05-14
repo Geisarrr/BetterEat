@@ -14,6 +14,16 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+
+            colors: {
+                'olive': {
+                    600: '#556B2F', // Sesuaikan kode hex dengan Figma
+                    800: '#53643A', // Warna Sidebar
+                },
+                'sage': {
+                    200: '#D1DBC1', // Warna tombol/aksen
+                }
+            }    
         },
     },
 

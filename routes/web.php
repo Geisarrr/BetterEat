@@ -17,6 +17,16 @@ use App\Http\Controllers\FoodNutritionTkpiController;
 use App\Http\Controllers\RecipeIngredientController;
 use App\Http\Controllers\RecipeDiseaseCategoryController;
 
+use App\Http\Controllers\Admin\DashboardController;
+
+Route::prefix('admin')->group(function () {
+    // Ini akan menjadi /admin
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+    
+    // Nantinya kamu bisa tambah di sini tanpa ngetik 'admin' lagi
+    // Route::get('/users', [UserController::class, 'index']); // Ini jadi /admin/users
+});
+
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
