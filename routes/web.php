@@ -16,28 +16,27 @@ use App\Http\Controllers\DiseaseCategoryController;
 use App\Http\Controllers\FoodNutritionTkpiController;
 use App\Http\Controllers\RecipeIngredientController;
 use App\Http\Controllers\RecipeDiseaseCategoryController;
+use App\Http\Controllers\CalorieCalculatorController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/resep', [RecipeController::class, 'index'])->name('resep');
 
+Route::get('/kalkulator', [CalorieCalculatorController::class, 'index'])->name('kalkulator');
 
+Route::prefix('kalkulator')->group(function () {
+    Route::get('/search',       [CalorieCalculatorController::class, 'search'])      ->name('kalkulator.search');
+    Route::get('/alternatives', [CalorieCalculatorController::class, 'alternatives'])->name('kalkulator.alternatives');
+});
 
-Route::get('/kalkulator', function () {
-    return view('kalkulator');
-})->name('kalkulator');
+Route::post('/kalkulator/calculate', [CalorieCalculatorController::class, 'calculate'])->name('kalkulator.calculate');
 
 Route::get('/community', function () {
-    return view('community');
+    return view('community'); 
 })->name('community');
 
-/*
-|--------------------------------------------------------------------------
-| 1. GUEST ROUTES (Bisa diakses sebelum login)
-|--------------------------------------------------------------------------
-*/
-
+// GUEST ROUTES (BISA DIAKSES MESKIPUN BELUM LOGIN)
 Route::middleware('guest')->group(function () {
     // Register
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -48,11 +47,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 });
 
-/*
-|--------------------------------------------------------------------------
-| 2. AUTHENTICATED ROUTES (Wajib Login)
-|--------------------------------------------------------------------------
-*/
+// 2. AUTHENTICATED RULES (WAJIB LOGIN)
 Route::middleware('auth')->group(function () {
     
     // Logout
@@ -90,15 +85,12 @@ Route::middleware('auth')->group(function () {
     | 3. ADMIN AREA (Master Data)
     |--------------------------------------------------------------------------
     */
-    // Kamu bisa tambahkan middleware 'admin' di sini nanti kalau sudah buat
     Route::prefix('admin')->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('user_profiles', UserProfileController::class);
         Route::resource('disease_categories', DiseaseCategoryController::class);
         Route::resource('food_nutrition', FoodNutritionTkpiController::class);
         Route::resource('recipe_ingredients', RecipeIngredientController::class);
-        
-        // Route Pivot Tabel (Manual Link)
         Route::post('/recipe-categories', [RecipeDiseaseCategoryController::class, 'store'])->name('recipe_categories.store');
         Route::delete('/recipe-categories', [RecipeDiseaseCategoryController::class, 'destroy'])->name('recipe_categories.destroy');
     });
