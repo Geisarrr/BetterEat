@@ -3,23 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserProfile; // Tambahkan ini agar bisa membuat profil otomatis
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth; // Tambahkan ini untuk fungsi session login
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    /**
-     * TAMPILAN FORM REGISTER
-     * Akan memanggil file resources/views/auth/register.blade.php
-     */
     public function showRegisterForm()
     {
         return view('auth.register'); 
     }
 
     /**
-     * 1. FUNGSI REGISTER (ACTION)
+     * FUNGSI REGISTER
      */
     public function register(Request $request)
     {
@@ -30,6 +27,7 @@ class AuthController extends Controller
             'password'  => 'required|string|min:8|confirmed', 
         ]);
 
+        // 1. Simpan data user ke tabel 'users'
         $user = User::create([
             'full_name'     => $request->full_name,
             'username'      => $request->username,
@@ -39,60 +37,62 @@ class AuthController extends Controller
             'profile_photo' => null, 
         ]);
 
-        // Otomatis login-kan user menggunakan Session setelah register berhasil
+        // 2. KUNCI: Buatkan profil kosong otomatis di tabel 'user_profiles'
+        // Ini biar Auth::user()->profile di Dashboard nggak error null
+        UserProfile::create([
+            'user_id' => $user->user_id, // Primary key user kamu
+        ]);
+
         Auth::login($user);
 
-        // Redirect ke halaman dashboard (atau halaman lain) dengan pesan sukses
-        return redirect()->intended('/dashboard')
-                         ->with('success', 'Registrasi berhasil! Selamat datang di BetterEat.');
+        return redirect()->route('dashboard')
+                ->with('success', 'Registrasi berhasil! Selamat datang di BetterEat.');
     }
 
-    /**
-     * TAMPILAN FORM LOGIN
-     * Akan memanggil file resources/views/auth/login.blade.php
-     */
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
     /**
-     * 2. FUNGSI LOGIN (ACTION)
+     * FUNGSI LOGIN
      */
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
+        $loginInput = $request->input('email');
+        
+        // Logika pintar: Cek apakah yang diinput email atau username
+        $fieldType = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        // Auth::attempt akan mengecek email dan password, lalu membuat Session jika benar
-        // Karena di Model User sudah pakai getAuthPassword(), Laravel otomatis baca kolom 'password_hash'
+        $credentials = [
+            $fieldType => $loginInput,
+            'password' => $request->password,
+        ];
+
         if (Auth::attempt($credentials)) {
-            // Mencegah serangan Session Fixation
             $request->session()->regenerate();
 
-            return redirect()->intended('/dashboard')
+            // Langsung arahkan ke dashboard (melupakan pepes ikan)
+            return redirect()->route('dashboard')
                              ->with('success', 'Login berhasil! Siap pantau nutrisi hari ini?');
         }
 
-        // Jika login gagal, kembalikan user ke halaman form login membawa pesan error
         return back()->withErrors([
-            'email' => 'Email atau Password salah!',
-        ])->onlyInput('email'); // Mempertahankan isi input email biar gak usah ketik ulang
+            'email' => 'Email/Username atau Password salah!',
+        ])->onlyInput('email');
     }
 
     /**
-     * 3. FUNGSI LOGOUT (ACTION)
+     * FUNGSI LOGOUT
      */
     public function logout(Request $request)
     {
         Auth::logout();
 
-        // Hapus dan reset sesi demi keamanan
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login')->with('success', 'Logout berhasil. Jaga pola makanmu ya!');
+        // Redirect ke Landing Page
+        return redirect()->route('home')->with('success', 'Logout berhasil. Jaga pola makanmu ya!');
     }
 }

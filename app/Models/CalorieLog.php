@@ -16,6 +16,8 @@ class CalorieLog extends Model
 
     protected $fillable = [
         'user_id',
+        'meal_name', 
+        'meal_time',
         'food_id',
         'quantity_gram',
         'calories',

@@ -17,12 +17,16 @@ use App\Http\Controllers\FoodNutritionTkpiController;
 use App\Http\Controllers\RecipeIngredientController;
 use App\Http\Controllers\RecipeDiseaseCategoryController;
 
+/*
+|--------------------------------------------------------------------------
+| PUBLIC ROUTES (Bisa diakses siapa saja)
+|--------------------------------------------------------------------------
+*/
 
+// Home diarahkan ke HomeController untuk pengecekan otomatis login -> dashboard
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/resep', [RecipeController::class, 'index'])->name('resep');
-
-
 
 Route::get('/kalkulator', function () {
     return view('kalkulator');
@@ -32,12 +36,12 @@ Route::get('/community', function () {
     return view('community');
 })->name('community');
 
+
 /*
 |--------------------------------------------------------------------------
-| 1. GUEST ROUTES (Bisa diakses sebelum login)
+| 1. GUEST ROUTES (Hanya bisa diakses jika BELUM login)
 |--------------------------------------------------------------------------
 */
-
 Route::middleware('guest')->group(function () {
     // Register
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -47,6 +51,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -58,18 +63,24 @@ Route::middleware('auth')->group(function () {
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Dashboard & Profile User
-    Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
+    // Dashboard User
+    Route::get('/dashboard', function () { 
+        return view('dashboardUser'); 
+    })->name('dashboard');
+
+    // Profile & Health Settings
     Route::get('/my-health-profile', [UserProfileController::class, 'editMyProfile'])->name('my_profile.edit');
     Route::post('/my-health-profile', [UserProfileController::class, 'updateMyProfile'])->name('my_profile.update');
 
     // Jurnal Kalori
-    Route::get('/calorie-logs', [CalorieLogController::class, 'index'])->name('calorie_logs.index');
-    Route::post('/calorie-logs', [CalorieLogController::class, 'store'])->name('calorie_logs.store');
-    Route::get('/calorie-logs/{id}/edit', [CalorieLogController::class, 'edit'])->name('calorie_logs.edit');
-    Route::put('/calorie-logs/{id}', [CalorieLogController::class, 'update'])->name('calorie_logs.update');
-    Route::delete('/calorie-logs/{id}', [CalorieLogController::class, 'destroy'])->name('calorie_logs.destroy');
-    Route::get('/calorie-summary', [CalorieLogController::class, 'summary'])->name('calorie_logs.summary');
+    Route::prefix('calorie-logs')->group(function () {
+        Route::get('/', [CalorieLogController::class, 'index'])->name('calorie_logs.index');
+        Route::post('/', [CalorieLogController::class, 'store'])->name('calorie_logs.store');
+        Route::get('/{id}/edit', [CalorieLogController::class, 'edit'])->name('calorie_logs.edit');
+        Route::put('/{id}', [CalorieLogController::class, 'update'])->name('calorie_logs.update');
+        Route::delete('/{id}', [CalorieLogController::class, 'destroy'])->name('calorie_logs.destroy');
+        Route::get('/summary', [CalorieLogController::class, 'summary'])->name('calorie_logs.summary');
+    });
 
     // Komunitas (Post & Feed)
     Route::get('/posts/category/{category}', [PostController::class, 'getByCategory'])->name('posts.category');
@@ -90,7 +101,6 @@ Route::middleware('auth')->group(function () {
     | 3. ADMIN AREA (Master Data)
     |--------------------------------------------------------------------------
     */
-    // Kamu bisa tambahkan middleware 'admin' di sini nanti kalau sudah buat
     Route::prefix('admin')->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('user_profiles', UserProfileController::class);
@@ -98,9 +108,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('food_nutrition', FoodNutritionTkpiController::class);
         Route::resource('recipe_ingredients', RecipeIngredientController::class);
         
-        // Route Pivot Tabel (Manual Link)
+        // Pivot Tabel
         Route::post('/recipe-categories', [RecipeDiseaseCategoryController::class, 'store'])->name('recipe_categories.store');
         Route::delete('/recipe-categories', [RecipeDiseaseCategoryController::class, 'destroy'])->name('recipe_categories.destroy');
     });
-
 });
