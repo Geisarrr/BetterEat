@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Recipe;
+use Illuminate\Support\Facades\Auth; // <-- 1. WAJIB TAMBAHKAN INI
 
 class HomeController extends Controller
 {
@@ -12,6 +13,13 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // 2. LOGIKA PENGALIHAN: Jika sudah login, langsung lempar ke dashboard
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+
+        // --- SISANYA ADALAH KODE ASLI DARI AMMARA ---
+        
         // Ambil data resep dari database
         $recipes = Recipe::all();
 
