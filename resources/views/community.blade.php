@@ -405,7 +405,7 @@
                                 {{ $recipe->title }}
                             </p>
                             @if($recipe->category)
-                            <p class="text-xs text-be-muted mt-1">{{ $recipe->category->name }}</p>
+                            <p class="text-xs text-be-muted mt-1">{{ $recipe->category }}</p>
                             @endif
                         </div>
                     </div>

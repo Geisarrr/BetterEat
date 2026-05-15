@@ -24,9 +24,6 @@ class CommunityHubSeeder extends Seeder
             ['name' => 'Kolesterol',         'description' => 'Makanan penurun kolesterol alami.'],
         ];
 
-        $this->call([
-            communityHubSeeder::class,
-        ]);
 
         foreach ($categories as $cat) {
             DB::table('disease_categories')->insertOrIgnore([
