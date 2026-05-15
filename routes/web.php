@@ -192,9 +192,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/users/{id}/detail', [DashboardController::class, 'userDetail'])->name('admin.users.detail');
 
-    Route::get('/recipes/detail', function () {
-        return view('admin.recipe-detail');
-    })->name('admin.recipes.detail');
+    Route::get('/recipes/{id}/detail', [DashboardController::class, 'recipeDetail'])->name('admin.recipes.detail');
 
     Route::get('/recipes/create', function () {
         return view('admin.recipe-create');
@@ -218,4 +216,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::patch('/users/{id}/role', [DashboardController::class, 'updateRole'])->name('admin.users.updateRole');
 
     Route::delete('/users/{id}', [DashboardController::class, 'destroyUser'])->name('admin.users.destroy');
+
+    Route::post('/recipes/store', [DashboardController::class, 'storeRecipe'])->name('admin.recipes.store');
+
+    Route::delete('/recipes/{id}', [DashboardController::class, 'destroyRecipe'])->name('admin.recipes.destroy');
+
+    Route::get('/recipes/{id}/edit', [DashboardController::class, 'editRecipe'])->name('admin.recipes.edit');
+
+    Route::put('/recipes/{id}', [DashboardController::class, 'updateRecipe'])->name('admin.recipes.update');
 });
