@@ -146,7 +146,7 @@
                     Resep Sehat<br>Nusantara
                 </h1>
                 <p class="mt-4 text-be-muted text-base leading-relaxed">
-                    Nikmati lezatnya masakan Nusantara, tanpa khawatir risiko kesehatan. Temukan ribuan resep lokal yang telah disesuaikan khusus untuk kebutuhan nutrisi tubuhmu
+                    Nikmati lezatnya masakan Nusantara, tanpa khawatir risiko kesehatan. Temukan ribuan resep lokal yang telah disesuaikan khusus untuk kebutuhan nutrisi tubuh Anda
                 </p>
 
                 {{-- Search bar --}}

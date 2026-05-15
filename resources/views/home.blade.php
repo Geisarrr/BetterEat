@@ -5,7 +5,7 @@
 @section('content')
 
 <!-- HERO SECTION -->
-<section class="relative min-h-screen flex items-center pt-16 overflow-hidden bg-be-bg">
+<section class="hero-section pt-40 pb-2 bg-be-highlight">
 
     <div class="absolute top-24 right-0 w-[420px] h-[420px] bg-be-highlight/25 rounded-full blur-3xl pointer-events-none -z-0"></div>
     <div class="absolute bottom-0 left-0 w-64 h-64 bg-be-light/70 rounded-full blur-3xl pointer-events-none -z-0"></div>

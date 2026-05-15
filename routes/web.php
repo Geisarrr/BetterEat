@@ -16,38 +16,56 @@ use App\Http\Controllers\DiseaseCategoryController;
 use App\Http\Controllers\FoodNutritionTkpiController;
 use App\Http\Controllers\RecipeIngredientController;
 use App\Http\Controllers\RecipeDiseaseCategoryController;
+use App\Http\Controllers\CalorieCalculatorController;
 
-use App\Http\Controllers\Admin\DashboardController;
 
+// Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Resep
 Route::get('/resep', [RecipeController::class, 'index'])->name('resep');
 
+// Kalkulator Gizi
+Route::get('/kalkulator', [CalorieCalculatorController::class, 'index'])->name('kalkulator');
 
+Route::prefix('kalkulator')->group(function () {
 
-Route::get('/kalkulator', function () {
-    return view('kalkulator');
-})->name('kalkulator');
+    Route::get('/search', [CalorieCalculatorController::class, 'search'])
+        ->name('kalkulator.search');
 
+    Route::get('/alternatives', [CalorieCalculatorController::class, 'alternatives'])
+        ->name('kalkulator.alternatives');
+
+    Route::post('/calculate', [CalorieCalculatorController::class, 'calculate'])
+        ->name('kalkulator.calculate');
+});
+
+// Community
 Route::get('/community', function () {
     return view('community');
 })->name('community');
 
+
 /*
 |--------------------------------------------------------------------------
-| 1. GUEST ROUTES (Bisa diakses sebelum login)
+| 1. GUEST ROUTES (Hanya bisa diakses jika BELUM login)
 |--------------------------------------------------------------------------
 */
-
 Route::middleware('guest')->group(function () {
+
     // Register
-    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])
+        ->name('register');
+
     Route::post('/register', [AuthController::class, 'register']);
 
     // Login
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::get('/login', [AuthController::class, 'showLoginForm'])
+        ->name('login');
+
     Route::post('/login', [AuthController::class, 'login']);
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -55,35 +73,84 @@ Route::middleware('guest')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-    
+
     // Logout
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
 
-    // Dashboard & Profile User
-    Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
-    Route::get('/my-health-profile', [UserProfileController::class, 'editMyProfile'])->name('my_profile.edit');
-    Route::post('/my-health-profile', [UserProfileController::class, 'updateMyProfile'])->name('my_profile.update');
+    // Dashboard User
+    Route::get('/dashboard', function () {
+        return view('dashboardUser');
+    })->name('dashboard');
 
-    // Jurnal Kalori
-    Route::get('/calorie-logs', [CalorieLogController::class, 'index'])->name('calorie_logs.index');
-    Route::post('/calorie-logs', [CalorieLogController::class, 'store'])->name('calorie_logs.store');
-    Route::get('/calorie-logs/{id}/edit', [CalorieLogController::class, 'edit'])->name('calorie_logs.edit');
-    Route::put('/calorie-logs/{id}', [CalorieLogController::class, 'update'])->name('calorie_logs.update');
-    Route::delete('/calorie-logs/{id}', [CalorieLogController::class, 'destroy'])->name('calorie_logs.destroy');
-    Route::get('/calorie-summary', [CalorieLogController::class, 'summary'])->name('calorie_logs.summary');
+    /*
+    |--------------------------------------------------------------------------
+    | Profile & Health Settings
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/my-health-profile', [UserProfileController::class, 'editMyProfile'])
+        ->name('my_profile.edit');
 
-    // Komunitas (Post & Feed)
-    Route::get('/posts/category/{category}', [PostController::class, 'getByCategory'])->name('posts.category');
+    Route::post('/my-health-profile', [UserProfileController::class, 'updateMyProfile'])
+        ->name('my_profile.update');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Jurnal Kalori
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('calorie-logs')->group(function () {
+
+        Route::get('/', [CalorieLogController::class, 'index'])
+            ->name('calorie_logs.index');
+
+        Route::post('/', [CalorieLogController::class, 'store'])
+            ->name('calorie_logs.store');
+
+        Route::get('/{id}/edit', [CalorieLogController::class, 'edit'])
+            ->name('calorie_logs.edit');
+
+        Route::put('/{id}', [CalorieLogController::class, 'update'])
+            ->name('calorie_logs.update');
+
+        Route::delete('/{id}', [CalorieLogController::class, 'destroy'])
+            ->name('calorie_logs.destroy');
+
+        Route::get('/summary', [CalorieLogController::class, 'summary'])
+            ->name('calorie_logs.summary');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Komunitas (Post & Feed)
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/posts/category/{category}', [PostController::class, 'getByCategory'])
+        ->name('posts.category');
+
     Route::resource('posts', PostController::class);
-    
-    // Like & Comment
-    Route::post('/posts/{postId}/like', [PostLikeController::class, 'toggle'])->name('post.like');
-    Route::resource('comments', CommentController::class)->only(['store', 'edit', 'update', 'destroy']);
 
-    // Resep & Bookmark
-    Route::get('/recipes/category/{category}', [RecipeController::class, 'getByCategory'])->name('recipes.category');
-    Route::get('/my-saved-recipes', [SavedRecipeController::class, 'index'])->name('saved_recipes.index');
-    Route::post('/recipes/{recipe}/toggle-save', [SavedRecipeController::class, 'toggle'])->name('saved_recipes.toggle');
+    // Like & Comment
+    Route::post('/posts/{postId}/like', [PostLikeController::class, 'toggle'])
+        ->name('post.like');
+
+    Route::resource('comments', CommentController::class)
+        ->only(['store', 'edit', 'update', 'destroy']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Resep & Bookmark
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/recipes/category/{category}', [RecipeController::class, 'getByCategory'])
+        ->name('recipes.category');
+
+    Route::get('/my-saved-recipes', [SavedRecipeController::class, 'index'])
+        ->name('saved_recipes.index');
+
+    Route::post('/recipes/{recipe}/toggle-save', [SavedRecipeController::class, 'toggle'])
+        ->name('saved_recipes.toggle');
+
     Route::resource('recipes', RecipeController::class);
 
     /*
@@ -92,21 +159,16 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
     // Kamu bisa tambahkan middleware 'admin' di sini nanti kalau sudah buat
-});
+    Route::prefix('admin')->group(function () {
+        Route::resource('users', UserController::class);
+        Route::resource('user_profiles', UserProfileController::class);
+        Route::resource('disease_categories', DiseaseCategoryController::class);
+        Route::resource('food_nutrition', FoodNutritionTkpiController::class);
+        Route::resource('recipe_ingredients', RecipeIngredientController::class);
+        
+        // Route Pivot Tabel (Manual Link)
+        Route::post('/recipe-categories', [RecipeDiseaseCategoryController::class, 'store'])->name('recipe_categories.store');
+        Route::delete('/recipe-categories', [RecipeDiseaseCategoryController::class, 'destroy'])->name('recipe_categories.destroy');
+    });
 
-Route::prefix('admin')->group(function () {
-    // Route Dashboard Utama
-    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
-    
-    // Route Manajemen User
-    Route::get('/users', [DashboardController::class, 'users'])->name('admin.users');
-
-    //Route Manajemen resep
-    Route::get('/recipes', [DashboardController::class, 'recipes'])->name('admin.recipes');
-
-    //Route Manajemen community hub
-    Route::get('/community', [DashboardController::class, 'community'])->name('admin.community');
-
-    //Route Manajemen TKPI
-    Route::get('/tkpi', [DashboardController::class, 'tkpi'])->name('admin.tkpi');
 });

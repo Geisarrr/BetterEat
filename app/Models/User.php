@@ -5,21 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-// use Laravel\Sanctum\HasApiTokens; -> Baris ini kita hapus
 
 class User extends Authenticatable
 {
-    // HasApiTokens kita hapus dari sini, sisakan HasFactory dan Notifiable
     use HasFactory, Notifiable; 
 
-    /**
-     * Mengarahkan Primary Key ke 'user_id' sesuai skema tabel users.
-     */
     protected $primaryKey = 'user_id';
 
-    /**
-     * Menonaktifkan updated_at jika tabel hanya memiliki created_at.
-     */
     public $timestamps = true; 
     const UPDATED_AT = null; 
 
@@ -32,9 +24,6 @@ class User extends Authenticatable
         'profile_photo',
     ];
 
-    /**
-     * Menyembunyikan password_hash demi keamanan (meskipun tidak pakai JSON lagi, ini tetap Best Practice).
-     */
     protected $hidden = [
         'password_hash',
         'remember_token',
@@ -48,11 +37,33 @@ class User extends Authenticatable
     }
 
     /**
-     * SANGAT PENTING: Memberitahu Laravel bahwa kolom password bernama 'password_hash'.
-     * Ini jantungnya sistem login (Auth::attempt) kita sekarang.
+     * RELASI KE PROFILE (user_profiles)
+     * Ini supaya kita bisa panggil: Auth::user()->profile->daily_calorie_target
      */
+    public function profile()
+    {
+        // 'user_id' di sini adalah foreign key di tabel user_profiles
+        return $this->hasOne(UserProfile::class, 'user_id');
+    }
+
+    /**
+     * RELASI KE JURNAL KALORI (calorie_logs)
+     * Ini supaya kita bisa hitung total kalori yang sudah dimakan hari ini
+     */
+    public function calorieLogs()
+    {
+        return $this->hasMany(CalorieLog::class, 'user_id');
+    }
+
+    // --- FUNGSI LOGIN ---
+
     public function getAuthPassword()
     {
         return $this->password_hash;
+    }
+
+    public function getAuthPasswordName()
+    {
+        return 'password_hash';
     }
 }

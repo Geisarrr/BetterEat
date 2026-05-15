@@ -10,21 +10,32 @@ return new class extends Migration
     {
         Schema::create('calorie_logs', function (Blueprint $table) {
             $table->id('log_id');
-            $table->foreignId('user_id')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreignId('food_id')->references('food_id')->on('food_id')->on('food_nutrition_tkpi')->onDelete('cascade');
-            
+
+            // Foreign key ke tabel users
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')
+                  ->references('user_id')
+                  ->on('users')
+                  ->onDelete('cascade');
+
+            // Foreign key ke tabel food_nutrition_tkpi
+            $table->unsignedBigInteger('food_id');
+            $table->foreign('food_id')
+                  ->references('food_id')
+                  ->on('food_nutrition_tkpi')
+                  ->onDelete('cascade');
+
             // Kolom input berat makanan
             $table->decimal('quantity_gram', 8, 2);
 
-            // --- KOLOM BARU UNTUK MENAMPUNG HASIL HITUNGAN ---
-            $table->decimal('calories', 10, 2)->default(0);
+            // Kolom hasil hitungan nutrisi
+            $table->decimal('calories',  10, 2)->default(0);
             $table->decimal('protein_g', 10, 2)->default(0);
-            $table->decimal('fat_g', 10, 2)->default(0);
-            $table->decimal('carbs_g', 10, 2)->default(0);
-            // ------------------------------------------------
+            $table->decimal('fat_g',     10, 2)->default(0);
+            $table->decimal('carbs_g',   10, 2)->default(0);
 
             $table->timestamp('logged_at')->useCurrent();
-            $table->timestamps(); // Menambahkan created_at & updated_at standar Laravel
+            $table->timestamps();
         });
     }
 
