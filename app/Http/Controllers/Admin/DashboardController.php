@@ -13,4 +13,9 @@ class DashboardController extends Controller
         // Mengarahkan ke file resources/views/admin/dashboard.blade.php
         return view('admin.dashboard');
     }
+
+    public function users()
+    {
+        return view('admin.users');
+    }
 }

@@ -19,15 +19,6 @@ use App\Http\Controllers\RecipeDiseaseCategoryController;
 
 use App\Http\Controllers\Admin\DashboardController;
 
-Route::prefix('admin')->group(function () {
-    // Ini akan menjadi /admin
-    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
-    
-    // Nantinya kamu bisa tambah di sini tanpa ngetik 'admin' lagi
-    // Route::get('/users', [UserController::class, 'index']); // Ini jadi /admin/users
-});
-
-
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/resep', [RecipeController::class, 'index'])->name('resep');
@@ -101,16 +92,12 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
     // Kamu bisa tambahkan middleware 'admin' di sini nanti kalau sudah buat
-    Route::prefix('admin')->group(function () {
-        Route::resource('users', UserController::class);
-        Route::resource('user_profiles', UserProfileController::class);
-        Route::resource('disease_categories', DiseaseCategoryController::class);
-        Route::resource('food_nutrition', FoodNutritionTkpiController::class);
-        Route::resource('recipe_ingredients', RecipeIngredientController::class);
-        
-        // Route Pivot Tabel (Manual Link)
-        Route::post('/recipe-categories', [RecipeDiseaseCategoryController::class, 'store'])->name('recipe_categories.store');
-        Route::delete('/recipe-categories', [RecipeDiseaseCategoryController::class, 'destroy'])->name('recipe_categories.destroy');
-    });
+});
 
+Route::prefix('admin')->group(function () {
+    // Route Dashboard Utama
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+    
+    // Route Manajemen User (Ini yang tadi hilang)
+    Route::get('/users', [DashboardController::class, 'users'])->name('admin.users');
 });
