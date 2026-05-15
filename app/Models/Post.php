@@ -9,17 +9,17 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $table = 'posts';
+    protected $table      = 'posts';
     protected $primaryKey = 'post_id';
-
-    // Matikan fitur updated_at karena di migration hanya ada created_at
-    const UPDATED_AT = null;
+    public $timestamps    = true;
+    const UPDATED_AT      = null; // ← Tambahan ini: beritahu Laravel bahwa updated_at tidak ada di DB
 
     protected $fillable = [
         'user_id',
         'category_id',
         'title',
         'content',
+        'image_url',
         'is_moderated',
     ];
 
@@ -30,19 +30,29 @@ class Post extends Model
         ];
     }
 
-    /**
-     * Relasi ke tabel User (Siapa yang membuat post ini)
-     */
+    public function getRouteKeyName(): string
+    {
+        return 'post_id';
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
-    /**
-     * Relasi ke tabel Disease Category (Kategori penyakit yang dibahas)
-     */
     public function category()
     {
         return $this->belongsTo(DiseaseCategory::class, 'category_id', 'category_id');
     }
+
+    public function likes()
+    {
+        return $this->hasMany(PostLike::class, 'post_id', 'post_id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'post_id', 'post_id');
+    }
+
 }

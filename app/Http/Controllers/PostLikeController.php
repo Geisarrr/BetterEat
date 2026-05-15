@@ -28,7 +28,9 @@ class PostLikeController extends Controller
 
         if ($existingLike) {
             // [UNLIKE] Jika datanya sudah ada, berarti user klik tombol untuk batal nge-like
-            $existingLike->delete();
+            PostLike::where('post_id', $postId)
+                ->where('user_id', $userId)
+                ->delete();
             
             // Kembalikan ke halaman feed tanpa pesan sukses agar UI tidak berisik (spam pop-up)
             return back();

@@ -48,6 +48,12 @@ class Recipe extends Model
         );
     }
 
+    public function category()
+    {
+        // Sesuaikan dengan nama model kategori yang ada di sistem
+        return $this->belongsTo(DiseaseCategory::class, 'category_id');
+    }
+
     /**
      * User yang menyimpan resep ini (SavedRecipe)
      */

@@ -1,24 +1,56 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace App\Models;
 
-return new class extends Migration
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
 {
-    public function up(): void
+    use HasFactory;
+
+    protected $table    = 'posts';
+    protected $primaryKey = 'post_id';
+
+    // Migration create_posts_table.php menggunakan $table->timestamps()
+    // artinya updated_at ADA — hapus baris const UPDATED_AT = null dari versi lama
+    public $timestamps = true;
+
+    protected $fillable = [
+        'user_id',
+        'category_id',
+        'title',
+        'content',
+        'image_url',       // ← Ini yang menyebabkan error sebelumnya — belum ada di fillable
+        'is_moderated',
+    ];
+
+    protected function casts(): array
     {
-        Schema::create('post_likes', function (Blueprint $table) {
-            $table->foreignId('post_id')->references('post_id')->on('posts')->onDelete('cascade');
-            $table->foreignId('user_id')->references('user_id')->on('users')->onDelete('cascade');
-            
-            // Mencegah user menyukai post yang sama lebih dari 1 kali
-            $table->primary(['post_id', 'user_id']);
-        });
+        return [
+            'is_moderated' => 'boolean',
+        ];
     }
 
-    public function down(): void
+    // ── Relasi ──────────────────────────────────────────────────────
+
+    public function user()
     {
-        Schema::dropIfExists('post_likes');
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
-};
+
+    public function category()
+    {
+        return $this->belongsTo(DiseaseCategory::class, 'category_id', 'category_id');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(PostLike::class, 'post_id', 'post_id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'post_id', 'post_id');
+    }
+}

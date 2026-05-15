@@ -19,17 +19,24 @@ return new class extends Migration
             
             $table->string('title');
             $table->text('content');
-            $table->string('image_url')->nullable(); // Supaya postingan komunitas bisa pakai foto makanan/progres
             
             $table->boolean('is_moderated')->default(false);
             
             // Menggunakan timestamps() standar Laravel (created_at & updated_at)
             $table->timestamps();
+
+            if (!Schema::hasColumn('posts', 'image_url')) {
+                $table->string('image_url')->nullable()->after('content');
+            }
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::table('posts', function (Blueprint $table) {
+            if (Schema::hasColumn('posts', 'image_url')) {
+                $table->dropColumn('image_url');
+            }
+        });
     }
 };
