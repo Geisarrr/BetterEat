@@ -66,4 +66,9 @@ class User extends Authenticatable
     {
         return 'password_hash';
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'user_id', 'user_id');
+    }
 }

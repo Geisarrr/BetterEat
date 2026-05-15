@@ -17,6 +17,7 @@ use App\Http\Controllers\FoodNutritionTkpiController;
 use App\Http\Controllers\RecipeIngredientController;
 use App\Http\Controllers\RecipeDiseaseCategoryController;
 use App\Http\Controllers\CalorieCalculatorController;
+use App\Http\Controllers\CommunityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,10 +46,7 @@ Route::prefix('kalkulator')->group(function () {
         ->name('kalkulator.calculate');
 });
 
-// Community
-Route::get('/community', function () {
-    return view('community');
-})->name('community');
+Route::get('/community', [CommunityController::class, 'index'])->name('community');
 
 
 /*

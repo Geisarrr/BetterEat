@@ -161,7 +161,7 @@
             {{-- Teks kiri --}}
             <div class="flex-1 max-w-xl text-center lg:text-left">
                 <span class="inline-flex items-center gap-2 text-xs font-semibold text-be-green bg-white border border-be-highlight px-3 py-1 rounded-full mb-4">
-                    <i class='bx bx-book-open'></i> Sesuai Standar TKPI
+                    <i class='bx bx-calculator'></i> Sesuai Standar TKPI
                 </span>
                 <h1 class="font-heading font-extrabold text-4xl lg:text-5xl text-be-primary leading-tight">
                     Kalkulator Gizi

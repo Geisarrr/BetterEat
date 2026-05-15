@@ -20,4 +20,9 @@ class DiseaseCategory extends Model
         'name',
         'description',
     ];
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'category_id', 'category_id');
+    }
 }

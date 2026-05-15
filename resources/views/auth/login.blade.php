@@ -43,7 +43,7 @@
                     @csrf
 
                     <div>
-                        <label for="email" class="block text-sm font-medium text-[#1B1C18] mb-2">Email / Username</label>
+                        <label for="email" class="block text-sm font-medium text-[#1B1C18] mb-2">Email </label>
                         <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
                             placeholder="Masukkan email atau username"
                             class="w-full px-4 py-3 rounded-xl border border-[#D1D5DC] focus:ring-2 focus:ring-[#53643A] focus:border-[#53643A] outline-none transition-all">
