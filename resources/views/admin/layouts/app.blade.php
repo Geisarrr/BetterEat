@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - BetterEat</title>
+    <title>Admin - BetterEat</title>
     
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -20,38 +20,29 @@
             </div>
         
                 <nav class="mt-4 px-4 space-y-2 pb-6">
+                    <a href="{{ route('admin.dashboard') }}" 
+                        class="block px-4 py-3 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-[#596A3F] text-white shadow-sm' : 'text-[#E4E2DC] hover:bg-[#596A3F] hover:text-white' }}">
+                        Dashboard
+                    </a>    
+
                     <a href="{{ route('admin.users') }}" 
                         class="block px-4 py-3 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('admin.users') ? 'bg-[#596A3F] text-white shadow-sm' : 'text-[#E4E2DC] hover:bg-[#596A3F] hover:text-white' }}">
                         Manajemen User
                     </a>
 
-                    <a href="#" 
-                        class="block px-4 py-3 text-sm font-medium rounded-lg hover:bg-[#596A3F] transition-colors text-[#E4E2DC] hover:text-white">
-                        Manajemen Community Hub
-                    </a>
-
-                    <a href="#" 
-                        class="block px-4 py-3 text-sm font-medium rounded-lg hover:bg-[#596A3F] transition-colors text-[#E4E2DC] hover:text-white">
+                    <a href="{{ route('admin.recipes') }}" 
+                        class="block px-4 py-3 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('admin.recipes') ? 'bg-[#596A3F] text-white shadow-sm' : 'text-[#E4E2DC] hover:bg-[#596A3F] hover:text-white' }}">
                         Manajemen Resep
                     </a>
 
-                    <a href="#" 
-                        class="block px-4 py-3 text-sm font-medium rounded-lg hover:bg-[#596A3F] transition-colors text-[#E4E2DC] hover:text-white">
+                    <a href="{{ route('admin.community') }}" 
+                        class="block px-4 py-3 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('admin.community') ? 'bg-[#596A3F] text-white shadow-sm' : 'text-[#E4E2DC] hover:bg-[#596A3F] hover:text-white' }}">
+                        Manajemen Community Hub
+                    </a>
+
+                    <a href="{{ route('admin.tkpi') }}" 
+                        class="block px-4 py-3 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('admin.tkpi') ? 'bg-[#596A3F] text-white shadow-sm' : 'text-[#E4E2DC] hover:bg-[#596A3F] hover:text-white' }}">
                         Manajemen TKPI
-                    </a>
-            
-                    <a href="{{ route('admin.dashboard') }}" 
-                        class="block px-4 py-3 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-[#596A3F] text-white shadow-sm' : 'text-[#E4E2DC] hover:bg-[#596A3F] hover:text-white' }}">
-                        Dashboard
-                    </a>
-            
-                    <a href="#" 
-                        class="block px-4 py-3 text-sm font-medium rounded-lg hover:bg-[#596A3F] transition-colors text-[#E4E2DC] hover:text-white mt-6">
-                        Laporan
-                    </a>
-                    <a href="#" 
-                        class="block px-4 py-3 text-sm font-medium rounded-lg hover:bg-[#596A3F] transition-colors text-[#E4E2DC] hover:text-white">
-                        Pengaturan
                     </a>
                 </nav>
             </div>

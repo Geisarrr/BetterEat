@@ -18,4 +18,19 @@ class DashboardController extends Controller
     {
         return view('admin.users');
     }
+
+    public function recipes()
+    {
+        return view('admin.recipes');
+    }
+
+    public function community()
+    {
+        return view('admin.community');
+    }
+
+    public function tkpi()
+    {
+        return view('admin.tkpi');
+    }
 }

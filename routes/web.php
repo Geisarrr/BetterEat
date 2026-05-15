@@ -98,6 +98,15 @@ Route::prefix('admin')->group(function () {
     // Route Dashboard Utama
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     
-    // Route Manajemen User (Ini yang tadi hilang)
+    // Route Manajemen User
     Route::get('/users', [DashboardController::class, 'users'])->name('admin.users');
+
+    //Route Manajemen resep
+    Route::get('/recipes', [DashboardController::class, 'recipes'])->name('admin.recipes');
+
+    //Route Manajemen community hub
+    Route::get('/community', [DashboardController::class, 'community'])->name('admin.community');
+
+    //Route Manajemen TKPI
+    Route::get('/tkpi', [DashboardController::class, 'tkpi'])->name('admin.tkpi');
 });
