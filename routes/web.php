@@ -174,47 +174,48 @@ Route::middleware('auth')->group(function () {
     */
 });
 
-Route::prefix('admin')->group(function () {
-        // Route Dashboard Utama
-        Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    // Route Dashboard Utama
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     
-        // Route Manajemen User
-        Route::get('/users', [DashboardController::class, 'users'])->name('admin.users');
+    // Route Manajemen User
+    Route::get('/users', [DashboardController::class, 'users'])->name('admin.users');
 
-        //Route Manajemen resep
-        Route::get('/recipes', [DashboardController::class, 'recipes'])->name('admin.recipes');
+    //Route Manajemen resep
+    Route::get('/recipes', [DashboardController::class, 'recipes'])->name('admin.recipes');
 
-        //Route Manajemen community hub
-        Route::get('/community', [DashboardController::class, 'community'])->name('admin.community');
+    //Route Manajemen community hub
+    Route::get('/community', [DashboardController::class, 'community'])->name('admin.community');
 
-        //Route Manajemen TKPI
-        Route::get('/tkpi', [DashboardController::class, 'tkpi'])->name('admin.tkpi');
+    //Route Manajemen TKPI
+    Route::get('/tkpi', [DashboardController::class, 'tkpi'])->name('admin.tkpi');
 
-        Route::get('/users/detail', function () {
-            return view('admin.user-detail');
-        })->name('admin.users.detail');
+    Route::get('/users/{id}/detail', [DashboardController::class, 'userDetail'])->name('admin.users.detail');
 
-        Route::get('/recipes/detail', function () {
-            return view('admin.recipe-detail');
-        })->name('admin.recipes.detail');
+    Route::get('/recipes/detail', function () {
+        return view('admin.recipe-detail');
+    })->name('admin.recipes.detail');
 
-        Route::get('/recipes/create', function () {
-            return view('admin.recipe-create');
-        })->name('admin.recipes.create');
+    Route::get('/recipes/create', function () {
+        return view('admin.recipe-create');
+    })->name('admin.recipes.create');
 
-        // Route untuk halaman Detail Community Hub
-        Route::get('/community/detail', function () {
-            return view('admin.community-detail');
-        })->name('admin.community.detail');
+    // Route untuk halaman Detail Community Hub
+    Route::get('/community/detail', function () {
+        return view('admin.community-detail');
+    })->name('admin.community.detail');
 
-        // Route untuk halaman Edit/Detail TKPI
-        Route::get('/tkpi/edit', function () {
-            return view('admin.tkpi-edit');
-        })->name('admin.tkpi.edit');
+    // Route untuk halaman Edit/Detail TKPI
+    Route::get('/tkpi/edit', function () {
+        return view('admin.tkpi-edit');
+    })->name('admin.tkpi.edit');
 
-        // Route untuk halaman Tambah TKPI
-        Route::get('/tkpi/create', function () {
-            return view('admin.tkpi-create');
-        })->name('admin.tkpi.create');
+    // Route untuk halaman Tambah TKPI
+    Route::get('/tkpi/create', function () {
+        return view('admin.tkpi-create');
+    })->name('admin.tkpi.create');
+
+    Route::patch('/users/{id}/role', [DashboardController::class, 'updateRole'])->name('admin.users.updateRole');
+
+    Route::delete('/users/{id}', [DashboardController::class, 'destroyUser'])->name('admin.users.destroy');
 });
-

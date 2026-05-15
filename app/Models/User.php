@@ -43,7 +43,7 @@ class User extends Authenticatable
     public function profile()
     {
         // 'user_id' di sini adalah foreign key di tabel user_profiles
-        return $this->hasOne(UserProfile::class, 'user_id');
+        return $this->hasOne(UserProfile::class, 'user_id', 'user_id');
     }
 
     /**

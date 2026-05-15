@@ -73,8 +73,15 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Langsung arahkan ke dashboard (melupakan pepes ikan)
-            return redirect()->route('dashboard')
-                             ->with('success', 'Login berhasil! Siap pantau nutrisi hari ini?');
+            if (Auth::user()->role === 'admin') {
+                // Jika admin, lempar ke dashboard admin
+                return redirect()->route('admin.dashboard'); 
+            } else {
+                // Jika user biasa, lempar ke dashboard user
+                return redirect()->route('dashboard')
+                            ->with('success', 'Login berhasil! Siap pantau nutrisi hari ini?');
+            }
+            
         }
 
         return back()->withErrors([
