@@ -18,6 +18,8 @@ use App\Http\Controllers\RecipeIngredientController;
 use App\Http\Controllers\RecipeDiseaseCategoryController;
 use App\Http\Controllers\CalorieCalculatorController;
 
+use App\Http\Controllers\Admin\DashboardController;
+
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -159,7 +161,8 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
     // Kamu bisa tambahkan middleware 'admin' di sini nanti kalau sudah buat
-    Route::prefix('admin')->group(function () {
+    
+    /*Route::prefix('admin')->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('user_profiles', UserProfileController::class);
         Route::resource('disease_categories', DiseaseCategoryController::class);
@@ -170,5 +173,50 @@ Route::middleware('auth')->group(function () {
         Route::post('/recipe-categories', [RecipeDiseaseCategoryController::class, 'store'])->name('recipe_categories.store');
         Route::delete('/recipe-categories', [RecipeDiseaseCategoryController::class, 'destroy'])->name('recipe_categories.destroy');
     });
-
+    */
 });
+
+Route::prefix('admin')->group(function () {
+        // Route Dashboard Utama
+        Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+    
+        // Route Manajemen User
+        Route::get('/users', [DashboardController::class, 'users'])->name('admin.users');
+
+        //Route Manajemen resep
+        Route::get('/recipes', [DashboardController::class, 'recipes'])->name('admin.recipes');
+
+        //Route Manajemen community hub
+        Route::get('/community', [DashboardController::class, 'community'])->name('admin.community');
+
+        //Route Manajemen TKPI
+        Route::get('/tkpi', [DashboardController::class, 'tkpi'])->name('admin.tkpi');
+
+        Route::get('/users/detail', function () {
+            return view('admin.user-detail');
+        })->name('admin.users.detail');
+
+        Route::get('/recipes/detail', function () {
+            return view('admin.recipe-detail');
+        })->name('admin.recipes.detail');
+
+        Route::get('/recipes/create', function () {
+            return view('admin.recipe-create');
+        })->name('admin.recipes.create');
+
+        // Route untuk halaman Detail Community Hub
+        Route::get('/community/detail', function () {
+            return view('admin.community-detail');
+        })->name('admin.community.detail');
+
+        // Route untuk halaman Edit/Detail TKPI
+        Route::get('/tkpi/edit', function () {
+            return view('admin.tkpi-edit');
+        })->name('admin.tkpi.edit');
+
+        // Route untuk halaman Tambah TKPI
+        Route::get('/tkpi/create', function () {
+            return view('admin.tkpi-create');
+        })->name('admin.tkpi.create');
+});
+

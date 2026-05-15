@@ -4,7 +4,7 @@
 <div class="w-full">
 
     <div class="mb-8">
-        <h2 class="text-3xl font-bold text-[#1B1C18]">Manajemen Pengguna</h2>
+        <h2 class="text-3xl font-bold text-[#1B1C18]">Manajemen User</h2>
         <p class="text-[#75786D] mt-2 text-sm">Kelola seluruh pengguna aplikasi BetterEat</p>
     </div>
 
@@ -55,7 +55,7 @@
                         </td>
                         <td class="px-8 py-5">
                             <div class="flex items-center gap-2">
-                                <button class="px-4 py-1.5 text-[12px] font-semibold text-white bg-[#53643A] rounded-lg hover:bg-[#3C4C25] transition-colors">Detail</button>
+                                <a href="{{ route('admin.users.detail') }}" class="px-4 py-1.5 text-[12px] font-semibold text-white bg-[#53643A] rounded-lg hover:bg-[#3C4C25] transition-colors">Detail</a>
                                 <button class="px-4 py-1.5 text-[12px] font-semibold text-[#53643A] border border-[#53643A] rounded-lg hover:bg-[#53643A]/5 transition-colors">Ubah Role</button>
                                 <button class="px-4 py-1.5 text-[12px] font-semibold text-[#DC2626] border border-[#DC2626] rounded-lg hover:bg-[#DC2626]/5 transition-colors">Reset Akun</button>
                             </div>
@@ -174,6 +174,13 @@
 
                 </tbody>
             </table>
+        </div>
+        <div class="px-8 py-4 border-t border-[#E5E5E5] flex justify-between items-center bg-[#F9FAFB]">
+            <p class="text-[12px] text-[#75786D]">Menampilkan 6 dari 1.240 pengguna</p>
+            <div class="flex gap-2">
+                <button class="px-3 py-1 border border-[#E5E5E5] rounded bg-white text-xs text-[#1B1C18] hover:bg-gray-50 transition-colors">Prev</button>
+                <button class="px-3 py-1 border border-[#E5E5E5] rounded bg-white text-xs text-[#1B1C18] hover:bg-gray-50 transition-colors">Next</button>
+            </div>
         </div>
     </div>
 
