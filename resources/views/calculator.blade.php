@@ -484,7 +484,7 @@
                                 <i class='bx bx-time-five'></i>
                             </div>
                             <div class="min-w-0">
-                                <p class="text-sm font-semibold text-be-dark leading-tight truncate">{{ $log->food->food_name }}</p>
+                                <p class="text-sm font-semibold text-be-dark leading-tight truncate">{{ $log->food?->food_name ?? 'Makanan Umum' }}</p>
                                 <p class="text-xs text-be-muted">{{ \Carbon\Carbon::parse($log->logged_at)->diffForHumans() }}</p>
                             </div>
                         </div>
