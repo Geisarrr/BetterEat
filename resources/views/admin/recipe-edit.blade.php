@@ -17,8 +17,8 @@
     </div>
 
     <div class="mb-8">
-        <h2 class="text-3xl font-bold text-[#1B1C18]">Edit Resep: {{ $recipe->name }}</h2>
-        <p class="text-[#75786D] mt-2 text-sm">Perbarui informasi, bahan, atau langkah pembuatan resep</p>
+        <h2 class="text-3xl font-bold text-[#1B1C18]">Edit Komposisi Resep: {{ $recipe->name }}</h2>
+        <p class="text-[#75786D] mt-2 text-sm">Sesuaikan komposisi bahan pangan standar TKPI untuk menghitung ulang kandungan nutrisi</p>
     </div>
 
     <form action="{{ route('admin.recipes.update', $recipe->recipe_id) }}" method="POST" enctype="multipart/form-data">
@@ -31,7 +31,6 @@
                     <p class="text-[13px] font-bold text-[#1B1C18] mb-3">Foto Resep</p>
                     <div class="relative group cursor-pointer">
                         <input type="file" name="image" id="imageInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewImage(this)">
-                        
                         <div id="imagePreviewContainer" class="border-2 border-dashed border-[#E5E5E5] rounded-2xl h-64 flex flex-col items-center justify-center bg-[#F9FAFB] group-hover:border-[#53643A] transition-colors overflow-hidden relative">
                             <div id="uploadPlaceholder" class="text-center {{ $recipe->image_url ? 'hidden' : '' }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-[#75786D] mb-3 group-hover:text-[#53643A] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -51,9 +50,9 @@
                         <label class="block text-[13px] font-bold text-[#1B1C18] mb-2">Kategori Utama</label>
                         <input type="text" name="category" value="{{ $recipe->category }}" required class="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#53643A]/20 transition-all focus:bg-white">
                     </div>
-                    <div>
-                        <label class="block text-[13px] font-bold text-[#1B1C18] mb-2">Estimasi Kalori (kal)</label>
-                        <input type="number" name="calories" value="{{ round($recipe->calories) }}" min="0" class="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#53643A]/20 transition-all focus:bg-white">
+                    <div class="p-4 bg-[#E8F5E9] rounded-2xl border border-dashed border-[#A5D6A7]">
+                        <p class="text-[12px] font-bold text-[#2E7D32] mb-1">🔄 Re-Kalkulasi Otomatis Aktif</p>
+                        <p class="text-[11px] text-[#4E342E] leading-relaxed">Saat kamu mengklik simpan perubahan, Laravel akan mengambil ulang nilai gizi dari tabel TKPI dan memperbarui seluruh ringkasan nutrisi resep ini.</p>
                     </div>
                 </div>
             </div>
@@ -66,17 +65,44 @@
                             <span>+</span> Tambah Baris
                         </button>
                     </div>
+                    
                     <div id="ingredient-container" class="space-y-3">
-                        @foreach(explode("\n", $recipe->ingredients) as $ingredient)
-                            @if(trim($ingredient) != '')
-                            <div class="flex items-center gap-3">
-                                <input type="text" name="ingredients[]" value="{{ trim($ingredient) }}" required class="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#53643A]/20 transition-all focus:bg-white">
-                                <button type="button" onclick="this.parentElement.remove()" class="p-2.5 text-[#DC2626] bg-[#FEF2F2] rounded-xl hover:bg-[#FCA5A5]/30 transition-colors shrink-0 border border-[#FCA5A5]/50">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                </button>
-                            </div>
+                        @php $hasIngredients = false; @endphp
+                        @foreach(explode("\n", $recipe->ingredients) as $ingredientText)
+                            @if(trim($ingredientText) != '')
+                                @php
+                                    $hasIngredients = true;
+                                    // Ekstrak angka gram dan teks nama bahannya (contoh: "100g Quinoa matang")
+                                    preg_match('/(\d+)\s*g\s+(.*)/i', $ingredientText, $matches);
+                                    $gramValue = $matches[1] ?? 0;
+                                    $nameValue = trim($matches[2] ?? $ingredientText);
+                                @endphp
+                                <div class="flex items-center gap-3">
+                                    <select name="ingredient_ids[]" required class="flex-1 px-4 py-2.5 bg-[#F9FAFB] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#53643A]/20 transition-all focus:bg-white">
+                                        <option value="">-- Pilih Bahan TKPI --</option>
+                                        @foreach($foods as $food)
+                                            <option value="{{ $food->food_id }}" {{ strtolower($food->food_name) == strtolower($nameValue) ? 'selected' : '' }}>
+                                                {{ $food->food_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <input type="number" name="quantities[]" value="{{ $gramValue }}" placeholder="Berat (g)" required min="1" class="w-32 px-4 py-2.5 bg-[#F9FAFB] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#53643A]/20 transition-all focus:bg-white text-center">
+                                    <button type="button" onclick="this.parentElement.remove()" class="p-2.5 text-[#DC2626] bg-[#FEF2F2] rounded-xl hover:bg-[#FCA5A5]/30 transition-colors shrink-0 border border-[#FCA5A5]/50">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    </button>
+                                </div>
                             @endif
                         @endforeach
+
+                        @if(!$hasIngredients)
+                            <div class="flex items-center gap-3">
+                                <select name="ingredient_ids[]" required class="flex-1 px-4 py-2.5 bg-[#F9FAFB] border border-[#E5E5E5] rounded-xl text-sm">
+                                    <option value="">-- Pilih Bahan TKPI --</option>
+                                    @foreach($foods as $food) <option value="{{ $food->food_id }}">{{ $food->food_name }}</option> @endforeach
+                                </select>
+                                <input type="number" name="quantities[]" placeholder="Berat (g)" required min="1" class="w-32 px-4 py-2.5 bg-[#F9FAFB] border border-[#E5E5E5] rounded-xl text-sm text-center">
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -111,6 +137,19 @@
     </form>
 </div>
 
+<template id="ingredient-template">
+    <div class="flex items-center gap-3">
+        <select name="ingredient_ids[]" required class="flex-1 px-4 py-2.5 bg-[#F9FAFB] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#53643A]/20 transition-all focus:bg-white">
+            <option value="">-- Pilih Bahan TKPI --</option>
+            @foreach($foods as $food) <option value="{{ $food->food_id }}">{{ $food->food_name }}</option> @endforeach
+        </select>
+        <input type="number" name="quantities[]" placeholder="Berat (g)" required min="1" class="w-32 px-4 py-2.5 bg-[#F9FAFB] border border-[#E5E5E5] rounded-xl text-sm text-center">
+        <button type="button" onclick="this.parentElement.remove()" class="p-2.5 text-[#DC2626] bg-[#FEF2F2] rounded-xl hover:bg-[#FCA5A5]/30 transition-colors shrink-0 border border-[#FCA5A5]/50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+        </button>
+    </div>
+</template>
+
 <script>
     function previewImage(input) {
         if (input.files && input.files[0]) {
@@ -126,14 +165,8 @@
 
     function addIngredient() {
         const container = document.getElementById('ingredient-container');
-        const div = document.createElement('div');
-        div.className = 'flex items-center gap-3';
-        div.innerHTML = `
-            <input type="text" name="ingredients[]" placeholder="Bahan selanjutnya..." required class="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#53643A]/20 transition-all focus:bg-white">
-            <button type="button" onclick="this.parentElement.remove()" class="p-2.5 text-[#DC2626] bg-[#FEF2F2] rounded-xl hover:bg-[#FCA5A5]/30 transition-colors shrink-0 border border-[#FCA5A5]/50">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-            </button>`;
-        container.appendChild(div);
+        const template = document.getElementById('ingredient-template').content.cloneNode(true);
+        container.appendChild(template);
     }
 
     function addStep() {

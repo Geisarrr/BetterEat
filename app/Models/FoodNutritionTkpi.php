@@ -19,6 +19,7 @@ class FoodNutritionTkpi extends Model
         'fat_g',
         'carbs_g',
         'fiber_g',
+        'sugar_g',
     ];
 
     /**

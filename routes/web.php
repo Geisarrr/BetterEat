@@ -185,7 +185,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/recipes', [DashboardController::class, 'recipes'])->name('admin.recipes');
 
     //Route Manajemen community hub
-    Route::get('/community', [DashboardController::class, 'community'])->name('admin.community');
+    Route::get('/community', [\App\Http\Controllers\Admin\DashboardController::class, 'community'])->name('admin.community');
+
+    // Rute untuk melihat Detail Postingan
+    Route::get('/community/{id}', [\App\Http\Controllers\Admin\DashboardController::class, 'communityDetail'])->name('admin.community.detail');
+
+    // Rute untuk Menghapus Postingan
+    Route::delete('/community/{id}', [\App\Http\Controllers\Admin\DashboardController::class, 'deletePost'])->name('admin.community.destroy');
 
     //Route Manajemen TKPI
     Route::get('/tkpi', [DashboardController::class, 'tkpi'])->name('admin.tkpi');
@@ -194,9 +200,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/recipes/{id}/detail', [DashboardController::class, 'recipeDetail'])->name('admin.recipes.detail');
 
-    Route::get('/recipes/create', function () {
-        return view('admin.recipe-create');
-    })->name('admin.recipes.create');
+    Route::get('/recipes/create', [DashboardController::class, 'createRecipe'])->name('admin.recipes.create');
 
     // Route untuk halaman Detail Community Hub
     Route::get('/community/detail', function () {
@@ -204,9 +208,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     })->name('admin.community.detail');
 
     // Route untuk halaman Edit/Detail TKPI
-    Route::get('/tkpi/edit', function () {
-        return view('admin.tkpi-edit');
-    })->name('admin.tkpi.edit');
+    Route::get('/tkpi/{id}/edit', [\App\Http\Controllers\Admin\DashboardController::class, 'editTkpi'])->name('admin.tkpi.edit');
+    Route::put('/tkpi/{id}', [\App\Http\Controllers\Admin\DashboardController::class, 'updateTkpi'])->name('admin.tkpi.update');
+    
+    Route::delete('/tkpi/{id}', [\App\Http\Controllers\Admin\DashboardController::class, 'deleteTkpi'])->name('admin.tkpi.destroy');
 
     // Route untuk halaman Tambah TKPI
     Route::get('/tkpi/create', function () {
@@ -224,4 +229,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/recipes/{id}/edit', [DashboardController::class, 'editRecipe'])->name('admin.recipes.edit');
 
     Route::put('/recipes/{id}', [DashboardController::class, 'updateRecipe'])->name('admin.recipes.update');
+
+    Route::post('/tkpi/store', [DashboardController::class, 'storeTkpi'])->name('admin.tkpi.store');
 });
