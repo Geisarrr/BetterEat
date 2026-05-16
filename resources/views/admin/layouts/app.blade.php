@@ -46,8 +46,18 @@
                     </a>
                 </nav>
             </div>
-    
-                <div class="p-4 mb-4 border-t border-[#596A3F]"> <a href="#" class="block px-4 py-3 text-sm font-medium rounded-lg hover:bg-[#596A3F] transition-colors text-[#E4E2DC] hover:text-white">Logout</a>
+
+                <div class="p-4 mb-4 border-t border-[#596A3F]">
+                    <a href="{{ route('logout') }}" 
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    class="block px-4 py-3 text-sm font-medium rounded-lg hover:bg-[#596A3F] transition-colors text-[#E4E2DC] hover:text-white">
+                        Logout
+                    </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                        @csrf
+                    </form>
+                
             </div>
         </aside>
 

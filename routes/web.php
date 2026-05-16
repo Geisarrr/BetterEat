@@ -153,27 +153,15 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('recipes', RecipeController::class);
 
-    /*
+    
+    
+});
+
+/*
     |--------------------------------------------------------------------------
     | 3. ADMIN AREA (Master Data)
     |--------------------------------------------------------------------------
-    */
-    // Kamu bisa tambahkan middleware 'admin' di sini nanti kalau sudah buat
-    
-    /*Route::prefix('admin')->group(function () {
-        Route::resource('users', UserController::class);
-        Route::resource('user_profiles', UserProfileController::class);
-        Route::resource('disease_categories', DiseaseCategoryController::class);
-        Route::resource('food_nutrition', FoodNutritionTkpiController::class);
-        Route::resource('recipe_ingredients', RecipeIngredientController::class);
-        
-        // Route Pivot Tabel (Manual Link)
-        Route::post('/recipe-categories', [RecipeDiseaseCategoryController::class, 'store'])->name('recipe_categories.store');
-        Route::delete('/recipe-categories', [RecipeDiseaseCategoryController::class, 'destroy'])->name('recipe_categories.destroy');
-    });
-    */
-});
-
+*/
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // Route Dashboard Utama
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
