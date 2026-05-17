@@ -488,7 +488,7 @@ class DashboardController extends Controller
     }
 
     // Menghapus Komentar Spesifik
-    public function deleteComment($id)
+    public function deleteComment(string $id)
     {
         try {
             // Asumsi primary key tabel comments adalah 'comment_id' sesuai seeder
@@ -498,6 +498,21 @@ class DashboardController extends Controller
             return back()->with('success', 'Komentar berhasil dihapus.');
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal menghapus komentar: ' . $e->getMessage());
+        }
+    }
+
+    // Fungsi untuk menandai postingan kembali aman
+    public function approvePost(string $id)
+    {
+        try {
+            $post = \App\Models\Post::where('post_id', $id)->firstOrFail();
+            
+            // Ubah status moderasi kembali menjadi 0 (Aman)
+            $post->update(['is_moderated' => 0]);
+            
+            return redirect()->route('admin.community')->with('success', 'Postingan telah ditandai sebagai aman.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal mengubah status: ' . $e->getMessage());
         }
     }
 }

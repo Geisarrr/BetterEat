@@ -221,4 +221,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/tkpi/store', [DashboardController::class, 'storeTkpi'])->name('admin.tkpi.store');
 
     Route::delete('/community/comment/{id}', [\App\Http\Controllers\Admin\DashboardController::class, 'deleteComment'])->name('admin.community.comment.destroy');
+
+    Route::patch('/community/{id}/approve', [\App\Http\Controllers\Admin\DashboardController::class, 'approvePost'])->name('admin.community.approve');
 });

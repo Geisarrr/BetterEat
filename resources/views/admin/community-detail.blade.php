@@ -48,10 +48,19 @@
                 {{ $post->comments->count() }} Komentar
             </div>
             
-            <button type="button" onclick="openDeleteModal('{{ route('admin.community.destroy', $post->post_id) }}', '{{ addslashes(Str::limit($post->title, 30)) }}', 'post')" class="px-4 py-2 text-[#DC2626] bg-[#FEF2F2] border border-[#FCA5A5]/50 rounded-lg hover:bg-[#FCA5A5]/30 transition-colors flex items-center gap-2 text-[12px] font-bold" title="Hapus Postingan">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                Hapus Postingan
-            </button>
+            <div class="flex items-center gap-3">
+                @if($post->is_moderated == 1)
+                <button type="button" onclick="openApproveModal('{{ route('admin.community.approve', $post->post_id) }}')" class="px-4 py-2 text-[#2E7D32] bg-[#E8F5E9] border border-[#C8E6C9] rounded-lg hover:bg-[#C8E6C9]/50 transition-colors flex items-center gap-2 text-[12px] font-bold" title="Tandai Aman">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    Tandai Aman
+                </button>
+                @endif
+
+                <button type="button" onclick="openDeleteModal('{{ route('admin.community.destroy', $post->post_id) }}', '{{ addslashes(Str::limit($post->title, 30)) }}', 'post')" class="px-4 py-2 text-[#DC2626] bg-[#FEF2F2] border border-[#FCA5A5]/50 rounded-lg hover:bg-[#FCA5A5]/30 transition-colors flex items-center gap-2 text-[12px] font-bold" title="Hapus Postingan">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    Hapus Postingan
+                </button>
+            </div>
         </div>
 
         <div class="p-6 bg-white">
@@ -124,6 +133,42 @@
     </div>
 </div>
 
+<div id="approveModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-gray-900/75 backdrop-blur-sm" aria-hidden="true"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-[#E5E5E5]">
+            <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-[#E8F5E9] rounded-full sm:mx-0 sm:h-10 sm:w-10 border border-[#C8E6C9]">
+                        <svg class="w-5 h-5 text-[#2E7D32]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg font-bold text-[#1B1C18]">Tandai Postingan Aman</h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-[#75786D]">Apakah Anda yakin postingan ini aman? Postingan akan dihapus dari daftar laporan moderasi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 py-4 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse border-t border-[#E5E5E5]">
+                <form id="approveForm" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="inline-flex justify-center w-full px-4 py-2.5 text-base font-bold text-white bg-[#53643A] border border-transparent rounded-xl shadow-sm hover:bg-[#3C4C25] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#53643A] sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+                        Ya, Tandai Aman
+                    </button>
+                </form>
+                <button type="button" onclick="closeApproveModal()" class="inline-flex justify-center w-full px-4 py-2.5 mt-3 text-base font-bold text-[#1B1C18] bg-white border border-[#E5E5E5] rounded-xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#53643A] sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     // Script diperbarui untuk menangani dua jenis penghapusan (Post dan Comment)
     function openDeleteModal(actionUrl, itemTitle, type) {
@@ -144,6 +189,15 @@
 
     function closeDeleteModal() {
         document.getElementById('deleteModal').classList.add('hidden');
+    }
+
+    function openApproveModal(actionUrl) {
+        document.getElementById('approveForm').action = actionUrl;
+        document.getElementById('approveModal').classList.remove('hidden');
+    }
+
+    function closeApproveModal() {
+        document.getElementById('approveModal').classList.add('hidden');
     }
 </script>
 @endsection
