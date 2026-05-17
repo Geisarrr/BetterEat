@@ -188,7 +188,7 @@
                     @if($post->image_url)
                         <div class="post-image mt-3">
                             <img
-                                src="{{ Str::startsWith($post->image_url, ['http://', 'https://']) ? $post->image_url : asset('storage/' . $post->image_url) }}"
+                                src="{{ Str::startsWith($post->image_url, ['http://', 'https://']) ? $post->image_url : asset( $post->image_url) }}"
                                 alt="Foto postingan"
                                 class="w-full rounded-xl object-cover max-h-72"
                             >
@@ -715,7 +715,7 @@ function openEditModal(postId, title, content, categoryId, imageUrl) {
     document.getElementById('editDropZone').style.pointerEvents = '';
 
     if (imageUrl) {
-        currentImg.src = imageUrl.startsWith('http') ? imageUrl : `/storage/${imageUrl}`;
+        currentImg.src = imageUrl.startsWith('http') ? imageUrl : `/${imageUrl}`;
         currentImgWrap.classList.remove('hidden');
     } else {
         currentImgWrap.classList.add('hidden');
