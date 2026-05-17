@@ -388,12 +388,6 @@
                                         {{ $recipe->protein_g }}g Protein
                                     </span>
                                 @endif
-                                @if($recipe->budget_estimate > 0)
-                                    <span class="nutrient-chip">
-                                        <i class='bx bx-money text-green-500'></i>
-                                        {{ $recipe->formatted_budget }}
-                                    </span>
-                                @endif
                             </div>
 
                             {{-- Waktu masak --}}

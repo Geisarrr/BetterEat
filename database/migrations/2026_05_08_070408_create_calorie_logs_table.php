@@ -20,6 +20,8 @@ return new class extends Migration
 
             // Foreign key ke tabel food_nutrition_tkpi
             $table->unsignedBigInteger('food_id');
+            $table->string('meal_name')->nullable();
+            $table->string('meal_time')->nullable();
             $table->foreign('food_id')
                   ->references('food_id')
                   ->on('food_nutrition_tkpi')

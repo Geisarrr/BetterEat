@@ -13,9 +13,9 @@ return new class extends Migration
             // Menghubungkan user_id ke tabel users
             $table->foreignId('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->text('health_condition')->nullable();
-            $table->integer('daily_calorie_target');
-            $table->integer('age');
-            $table->decimal('weight_kg', 5, 2);
+            $table->integer('daily_calorie_target')->nullable();
+            $table->integer('age')->nullable();
+            $table->decimal('weight_kg', 5, 2)->nullable();
             $table->timestamps();
         });
     }

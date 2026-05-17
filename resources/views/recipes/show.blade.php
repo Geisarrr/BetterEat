@@ -152,39 +152,6 @@
                             <p class="text-be-muted mt-3 leading-relaxed">{{ $recipe->description }}</p>
                         @endif
 
-                        {{-- Chips info --}}
-                        <div class="flex flex-wrap gap-3 mt-5">
-                            @if($recipe->calories)
-                                <div class="flex items-center gap-2 px-4 py-2 bg-orange-50 rounded-xl">
-                                    <i class='bx bx-flame text-orange-400 text-lg'></i>
-                                    <div>
-                                        <p class="text-xs text-gray-400">Kalori</p>
-                                        <p class="font-semibold text-sm text-be-dark">{{ $recipe->formatted_calories }}</p>
-                                    </div>
-                                </div>
-                            @endif
-
-                            @if($recipe->budget_estimate)
-                                <div class="flex items-center gap-2 px-4 py-2 bg-green-50 rounded-xl">
-                                    <i class='bx bx-money text-green-500 text-lg'></i>
-                                    <div>
-                                        <p class="text-xs text-gray-400">Estimasi Budget</p>
-                                        <p class="font-semibold text-sm text-be-dark">{{ $recipe->formatted_budget }}</p>
-                                    </div>
-                                </div>
-                            @endif
-
-                            @if($recipe->prep_time_minutes)
-                                <div class="flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-xl">
-                                    <i class='bx bx-time-five text-blue-400 text-lg'></i>
-                                    <div>
-                                        <p class="text-xs text-gray-400">Waktu Masak</p>
-                                        <p class="font-semibold text-sm text-be-dark">{{ $recipe->formatted_prep_time }}</p>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-
                     </div>
                 </div>
 

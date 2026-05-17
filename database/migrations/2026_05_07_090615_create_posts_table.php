@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamps();
 
             if (!Schema::hasColumn('posts', 'image_url')) {
-                $table->string('image_url')->nullable()->after('content');
+                $table->string('image_url')->nullable();
             }
         });
     }

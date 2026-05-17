@@ -15,7 +15,7 @@ class Recipe extends Model
     protected $fillable = [
         'name', 'description', 'image_url',
         'calories', 'protein_g', 'fat_g', 'carbs_g', 'sugar_g', 'fiber_g',
-        'glycemic_index', 'category', 'budget_estimate',
+        'glycemic_index', 'category',
         'prep_time_minutes', 'ingredients', 'cooking_steps',
     ];
 

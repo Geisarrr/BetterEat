@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Recipe;
 use App\Models\DiseaseCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class RecipeController extends Controller
 {
@@ -16,42 +17,30 @@ class RecipeController extends Controller
     {
         $query = Recipe::query();
 
-        // --- FILTER: Search by nama resep ---
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // --- FILTER: Kategori penyakit (tab aktif) ---
-        // Nilai yang diterima: 'Semua', 'Diabetes', 'Hipertensi', 'Kolesterol', 'Asam Urat', 'Diet'
         if ($request->filled('category') && $request->category !== 'Semua') {
             $query->where('category', $request->category);
         }
 
-        // --- FILTER: Budget (budget_estimate <= nilai pilihan) ---
-        // Nilai yang diterima dari dropdown: '15000', '25000', '50000', '100000'
         if ($request->filled('budget') && $request->budget !== 'Semua Budget') {
             $query->where('budget_estimate', '<=', (int) $request->budget);
         }
 
-        // --- FILTER: Kalori (calories <= nilai pilihan) ---
-        // Nilai yang diterima: '200', '400', '600'
         if ($request->filled('kalori') && $request->kalori !== 'Pilih Kalori') {
             $query->where('calories', '<=', (int) $request->kalori);
         }
 
-        // --- FILTER: Bahan utama (search di dalam field ingredients) ---
         if ($request->filled('bahan') && $request->bahan !== 'Semua Bahan') {
             $query->where('ingredients', 'like', '%' . $request->bahan . '%');
         }
 
-        // --- LOAD: Ambil semua resep, paginate 6 per halaman ---
         $recipes = $query->latest()->paginate(6)->withQueryString();
 
-        // --- LOAD: Ambil semua category_id dari disease_categories untuk tab filter ---
-        // Gunakan array statis agar tidak perlu query kalau tabel disease_categories belum ada
         $filterCategories = ['Semua', 'Diabetes', 'Hipertensi', 'Kolesterol', 'Asam Urat', 'Diet'];
 
-        // --- Kirim variabel ke view ---
         return view('recipes.index', [
             'recipes'           => $recipes,
             'filterCategories'  => $filterCategories,
@@ -62,8 +51,6 @@ class RecipeController extends Controller
 
     /**
      * [READ] Filter resep berdasarkan kategori via URL segment
-     * Route: GET /recipes/category/{category}  →  recipes.category
-     * (Opsional, bisa juga pakai query string dari index())
      */
     public function getByCategory($category)
     {
@@ -80,13 +67,11 @@ class RecipeController extends Controller
 
     /**
      * [READ] Menampilkan detail lengkap satu resep
-     * Route: GET /recipes/{id}  →  recipes.show
      */
     public function show(string $id)
     {
         $recipe = Recipe::findOrFail($id);
 
-        // Resep serupa: kategori sama, exclude yang sedang dilihat, max 3
         $relatedRecipes = Recipe::where('category', $recipe->category)
                                 ->where('recipe_id', '!=', $recipe->recipe_id)
                                 ->limit(3)
@@ -97,7 +82,6 @@ class RecipeController extends Controller
 
     /**
      * [FORM] Tampilan form tambah resep (Admin)
-     * Route: GET /recipes/create  →  recipes.create
      */
     public function create()
     {
@@ -107,14 +91,14 @@ class RecipeController extends Controller
 
     /**
      * [CREATE] Simpan resep baru dari form (Admin)
-     * Route: POST /recipes  →  recipes.store
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name'              => 'required|string|max:255',
             'description'       => 'nullable|string',
-            'image_url'         => 'nullable|string',
+            // ✅ PERBAIKAN: validasi sebagai file upload, bukan string
+            'image'             => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'calories'          => 'required|numeric|min:0',
             'protein_g'         => 'required|numeric|min:0',
             'fat_g'             => 'required|numeric|min:0',
@@ -129,6 +113,18 @@ class RecipeController extends Controller
             'cooking_steps'     => 'required|string',
         ]);
 
+        // ✅ PERBAIKAN: Proses upload file dan simpan path-nya
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            // Simpan ke storage/app/public/recipes/
+            // Path yang tersimpan di DB: "recipes/namafile.jpg"
+            $imagePath = $request->file('image')->store('recipes', 'public');
+        }
+
+        // Ganti key 'image' dengan 'image_url' yang berisi path hasil upload
+        unset($validated['image']);
+        $validated['image_url'] = $imagePath;
+
         Recipe::create($validated);
 
         return redirect()->route('recipes.index')
@@ -137,7 +133,6 @@ class RecipeController extends Controller
 
     /**
      * [FORM] Tampilan form edit resep (Admin)
-     * Route: GET /recipes/{id}/edit  →  recipes.edit
      */
     public function edit(string $id)
     {
@@ -149,7 +144,6 @@ class RecipeController extends Controller
 
     /**
      * [UPDATE] Simpan perubahan resep (Admin)
-     * Route: PUT /recipes/{id}  →  recipes.update
      */
     public function update(Request $request, string $id)
     {
@@ -158,7 +152,8 @@ class RecipeController extends Controller
         $validated = $request->validate([
             'name'              => 'required|string|max:255',
             'description'       => 'nullable|string',
-            'image_url'         => 'nullable|string',
+            // ✅ PERBAIKAN: validasi sebagai file upload, bukan string
+            'image'             => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'calories'          => 'required|numeric|min:0',
             'protein_g'         => 'required|numeric|min:0',
             'fat_g'             => 'required|numeric|min:0',
@@ -173,6 +168,22 @@ class RecipeController extends Controller
             'cooking_steps'     => 'required|string',
         ]);
 
+        // ✅ PERBAIKAN: Proses upload file baru jika ada
+        if ($request->hasFile('image')) {
+            // Hapus foto lama dari storage agar tidak menumpuk
+            if ($recipe->image_url) {
+                Storage::disk('public')->delete($recipe->image_url);
+            }
+            // Simpan foto baru
+            $validated['image_url'] = $request->file('image')->store('recipes', 'public');
+        } else {
+            // Tidak ada foto baru → pertahankan foto lama
+            $validated['image_url'] = $recipe->image_url;
+        }
+
+        // Hapus key 'image' dari validated agar tidak error saat update
+        unset($validated['image']);
+
         $recipe->update($validated);
 
         return redirect()->route('recipes.show', $recipe->recipe_id)
@@ -180,12 +191,17 @@ class RecipeController extends Controller
     }
 
     /**
-     * [DELETE] Hapus resep (Admin)
-     * Route: DELETE /recipes/{id}  →  recipes.destroy
+     * [DELETE] Hapus resep beserta fotonya (Admin)
      */
     public function destroy(string $id)
     {
         $recipe = Recipe::findOrFail($id);
+
+        // ✅ TAMBAHAN: Hapus file foto dari storage saat resep dihapus
+        if ($recipe->image_url) {
+            Storage::disk('public')->delete($recipe->image_url);
+        }
+
         $recipe->delete();
 
         return redirect()->route('recipes.index')

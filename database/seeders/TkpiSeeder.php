@@ -31,7 +31,8 @@ class TkpiSeeder extends Seeder
                 'protein_g'         => $food['protein_g'],
                 'fat_g'             => $food['fat_g'],
                 'carbs_g'           => $food['carbs_g'],
-                'fiber_g'           => $food['fiber_g'],
+                'sugar_g'           => $food['sugar_g'],
+                'fiber_g'           => $food['fiber_g'], 
             ]);
         }
 
