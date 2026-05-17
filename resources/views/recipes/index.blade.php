@@ -351,11 +351,9 @@
 
                         {{-- Gambar --}}
                         <div class="relative overflow-hidden bg-be-light" style="height:200px;">
-                            <img src="{{ $recipe->image_src }}"
-                                 alt="{{ $recipe->name }}"
-                                 loading="lazy"
-                                 onerror="this.src='https://placehold.co/600x400/C5D8A4/3C4C25?text={{ urlencode($recipe->name) }}'">
-
+                            <img src="{{ asset($recipe->image_url) }}"
+                                loading="lazy"
+                                onerror="this.src='https://placehold.co/600x400/C5D8A4/3C4C25?text={{ urlencode($recipe->name) }}'">
                             {{-- Badge kategori --}}
                             <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold shadow-sm
                                          {{ $recipe->category_badge_color }}">

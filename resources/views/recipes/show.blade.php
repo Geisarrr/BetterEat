@@ -110,10 +110,10 @@
 
                     {{-- Gambar --}}
                     <div class="relative h-72 sm:h-96 bg-be-light overflow-hidden">
-                        <img src="{{ $recipe->image_src }}"
-                             alt="{{ $recipe->name }}"
-                             class="w-full h-full object-cover"
-                             onerror="this.src='https://placehold.co/800x400/C5D8A4/3C4C25?text={{ urlencode($recipe->name) }}'">
+                        <img src="{{ asset($recipe->image_url) }}"
+                            alt="{{ $recipe->name }}"
+                            class="w-full h-full object-cover"
+                            onerror="this.src='https://placehold.co/800x400/C5D8A4/3C4C25?text={{ urlencode($recipe->name) }}'">
 
                         {{-- Overlay badges --}}
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
@@ -329,10 +329,10 @@
                     @foreach($relatedRecipes as $related)
                         <div class="related-card">
                             <div class="h-44 overflow-hidden bg-be-light">
-                                <img src="{{ $related->image_src }}"
-                                     alt="{{ $related->name }}"
-                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-400"
-                                     onerror="this.src='https://placehold.co/400x200/C5D8A4/3C4C25?text={{ urlencode($related->name) }}'">
+                                <img src="{{ asset($related->image_url) }}"
+                                    alt="{{ $related->name }}"
+                                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-400"
+                                    onerror="this.src='https://placehold.co/400x200/C5D8A4/3C4C25?text={{ urlencode($related->name) }}'">
                             </div>
                             <div class="p-5">
                                 <h3 class="font-heading font-bold text-base text-be-dark">{{ $related->name }}</h3>

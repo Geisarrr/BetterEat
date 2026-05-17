@@ -204,12 +204,12 @@
 
             {{-- Search Nama Makanan --}}
             <div class="relative mb-5">
-                <label class="block text-sm font-medium text-be-dark mb-1.5">Nama Makanan</label>
+                <label class="block text-sm font-medium text-be-dark mb-1.5">Nama Makanan (Sesuai TKPI)</label>
                 <div class="relative">
                     <i class='bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-be-muted text-lg'></i>
                     <input id="food-search"
                            type="text"
-                           placeholder="Cari makanan (ex: Nasi Goreng, Ayam Bakar)"
+                           placeholder="Ketik bahan mentah/masakan (ex: Beras giling, Ayam ras)"
                            autocomplete="off"
                            class="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-200 bg-[#FAFAFA]
                                   text-sm text-be-dark placeholder-gray-400
@@ -219,10 +219,19 @@
                         <div class="w-4 h-4 border-2 border-be-highlight border-t-be-green rounded-full animate-spin"></div>
                     </div>
                 </div>
+                
                 {{-- Dropdown hasil search --}}
                 <div id="food-dropdown"
                      class="hidden absolute z-30 w-full mt-1 bg-white border border-gray-200
                             rounded-xl shadow-lg overflow-hidden">
+                </div>
+
+                {{-- Helper Text TKPI & BDD --}}
+                <div class="mt-2.5 p-3 bg-be-light/50 border border-be-highlight/30 rounded-xl flex items-start gap-2">
+                    <i class='bx bx-info-circle text-be-green mt-0.5 text-base'></i>
+                    <p class="text-[11px] text-be-muted leading-relaxed">
+                        Pilih makanan dari saran yang muncul saat mengetik. Nilai nutrisi dihitung berdasarkan standar <strong>Berat Dapat Dimakan (BDD) per 100 gram</strong> sesuai database asli TKPI.
+                    </p>
                 </div>
             </div>
 
@@ -236,8 +245,9 @@
                 <div class="flex flex-wrap gap-2 mb-2" id="preset-chips">
                     @php
                         $presetBahan = [
-                            'Beras','Ayam','Ikan','Tempe','Daging Sapi','Telur','Udang','Bayam',
-                            'Wortel','Jagung','Kangkung',
+                            'Nasi', 'Nasi tim', 'Nasi beras merah', 
+                            'Bihun, mentah', 'Nasi jagung', 'Jagung muda, rebus', 
+                            'Mi basah', 'Mi kering', 'Roti putih', 'Tepung terigu'
                         ];
                     @endphp
                     @foreach($presetBahan as $bahan)

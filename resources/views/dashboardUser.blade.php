@@ -34,7 +34,7 @@
                 Selamat Pagi, {{ explode(' ', Auth::user()->full_name)[0] }}!
             </h1>
             <p class="text-[#D6EAB5] text-lg mb-6 leading-relaxed">
-                Kamu telah mengonsumsi **{{ number_format($terpakai) }} kkal** hari ini. 
+                Kamu telah mengonsumsi <strong>{{ number_format($terpakai) }} kkal</strong> hari ini. 
                 @if($sisa > 0)
                     Tetap jaga pola makan untuk kesehatan optimal!
                 @else
