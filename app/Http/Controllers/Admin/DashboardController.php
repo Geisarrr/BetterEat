@@ -129,9 +129,13 @@ class DashboardController extends Controller
                 $q->where('title', 'like', '%' . $searchTerm . '%')
                 // Membaca relasi ke tabel users untuk mencari nama
                 ->orWhereHas('user', function($userQuery) use ($searchTerm) {
-                    $userQuery->where('name', 'like', '%' . $searchTerm . '%');
+                    $userQuery->where('full_name', 'like', '%' . $searchTerm . '%');
                 });
             });
+        }
+
+        if ($request->has('category') && $request->category != '') {
+            $query->where('category_id', $request->category);
         }
 
         // 2. Filter Status Moderasi
@@ -480,6 +484,20 @@ class DashboardController extends Controller
             return redirect()->route('admin.community')->with('success', 'Postingan berhasil dihapus beserta fotonya.');
         } catch (\Exception $e) {
             return redirect()->route('admin.community')->with('error', 'Gagal menghapus postingan: ' . $e->getMessage());
+        }
+    }
+
+    // Menghapus Komentar Spesifik
+    public function deleteComment($id)
+    {
+        try {
+            // Asumsi primary key tabel comments adalah 'comment_id' sesuai seeder
+            $comment = \App\Models\Comment::where('comment_id', $id)->firstOrFail();
+            $comment->delete();
+            
+            return back()->with('success', 'Komentar berhasil dihapus.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menghapus komentar: ' . $e->getMessage());
         }
     }
 }

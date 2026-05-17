@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             TkpiSeeder::class,   // Data gizi dasar (100 data)
             RecipeSeeder::class, // Resep Diabetes, Fitness, & Jantung (Data rekomendasi)
+            CommunityHubSeeder::class,
         ]);
     }
 }

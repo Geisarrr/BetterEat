@@ -77,7 +77,7 @@
                                     {{ substr($post->user->name ?? 'U', 0, 1) }}
                                 </div>
                                 <div>
-                                    <p class="text-sm font-bold text-[#1B1C18]">{{ $post->user->name ?? 'Pengguna Tidak Dikenal' }}</p>
+                                    <p class="text-sm font-bold text-[#1B1C18]">{{ $post->user->full_name ?? $post->user->name ?? 'Pengguna Tidak Dikenal' }}</p>
                                     <p class="text-[11px] text-[#75786D]">{{ $post->user->email ?? '-' }}</p>
                                 </div>
                             </div>

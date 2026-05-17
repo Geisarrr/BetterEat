@@ -55,10 +55,10 @@
                             <form action="{{ route('admin.users.updateRole', $user->user_id) }}" method="POST" class="flex items-center gap-2">
                                 @csrf
                                 @method('PATCH')
-                                <select name="role" class="text-[11px] font-bold px-2 py-1 rounded bg-[#E5E5E5] text-[#4A5565] border border-transparent focus:border-[#53643A] focus:ring-0 cursor-pointer outline-none">
+                                <select name="role" 
+                                    class="w-[120px] text-[11px] font-bold px-2 py-1 rounded bg-[#E5E5E5] text-[#4A5565] border border-transparent focus:border-[#53643A] focus:ring-0 cursor-pointer outline-none">
                                     <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User</option>
                                     <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                                    <option value="nutritionist" {{ $user->role == 'nutritionist' ? 'selected' : '' }}>Nutritionist</option>
                                 </select>
                                 <button type="submit" class="px-2 py-1 text-[11px] font-semibold text-[#1B1C18] border border-[#E5E5E5] rounded hover:bg-gray-100 transition-colors">
                                     Simpan

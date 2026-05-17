@@ -219,4 +219,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::put('/recipes/{id}', [DashboardController::class, 'updateRecipe'])->name('admin.recipes.update');
 
     Route::post('/tkpi/store', [DashboardController::class, 'storeTkpi'])->name('admin.tkpi.store');
+
+    Route::delete('/community/comment/{id}', [\App\Http\Controllers\Admin\DashboardController::class, 'deleteComment'])->name('admin.community.comment.destroy');
 });
