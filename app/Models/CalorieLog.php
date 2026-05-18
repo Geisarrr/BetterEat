@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\FoodNutritionTkpi; // ← Tambah ini
 
 class CalorieLog extends Model
 {
@@ -12,11 +13,9 @@ class CalorieLog extends Model
     protected $table = 'calorie_logs';
     protected $primaryKey = 'log_id';
 
-    // public $timestamps = false; <--- Dihapus agar Laravel otomatis mengisi created_at & updated_at
-
     protected $fillable = [
         'user_id',
-        'meal_name', 
+        'meal_name',
         'meal_time',
         'food_id',
         'quantity_gram',
@@ -27,19 +26,17 @@ class CalorieLog extends Model
         'logged_at',
     ];
 
-    /**
-     * Relasi ke tabel Users
-     */
+    protected $casts = [
+        'logged_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
-    /**
-     * Relasi ke tabel Food Nutrition TKPI
-     */
     public function food()
     {
-        return $this->belongsTo(FoodNutritionTkpi::class, 'food_id', 'food_id');
+        return $this->belongsTo(FoodNutritionTkpi::class, 'food_id', 'food_id'); // ← Sekarang terbaca
     }
 }

@@ -49,7 +49,7 @@
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
-                            <label class="block text-[11px] font-bold text-[#75786D] uppercase tracking-wider mb-2">Kalori (kcal)</label>
+                            <label class="block text-[11px] font-bold text-[#75786D] uppercase tracking-wider mb-2">Kalori (kal)</label>
                             <input type="number" step="0.01" name="calories_per_100g" value="0" required class="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#E5E5E5] rounded-xl text-lg font-bold text-[#1B1C18] focus:outline-none focus:ring-2 focus:ring-[#53643A]/20 transition-all focus:bg-white">
                         </div>
                         <div>

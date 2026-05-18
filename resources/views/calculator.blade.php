@@ -5,7 +5,7 @@
 @push('styles')
 <style>
     @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(18px); }
+        from { opacity: 0; transform: translateY(16px); }
         to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes countUp {
@@ -21,25 +21,16 @@
         70%  { box-shadow: 0 0 0 12px rgba(77,124,15,0); }
         100% { box-shadow: 0 0 0 0 rgba(77,124,15,0); }
     }
-    @keyframes growBar {
-        from { width: 0; }
-    }
-    @keyframes growBarV {
-        from { height: 0; }
-    }
+    @keyframes growBar   { from { width: 0; } }
+    @keyframes growBarV  { from { height: 0; } }
+    @keyframes slideIn   { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:translateX(0); } }
 
     .fade-up    { animation: fadeUp .5s ease both; }
     .count-anim { animation: countUp .45s cubic-bezier(.34,1.56,.64,1) both; }
 
-    .skeleton {
-        background: linear-gradient(90deg, #e5ecd8 25%, #f0f5e8 50%, #e5ecd8 75%);
-        background-size: 400px 100%;
-        animation: shimmer 1.3s infinite;
-        border-radius: 8px;
-    }
-
+    /* ── Dropdown ── */
     #food-dropdown {
-        max-height: 240px;
+        max-height: 260px;
         overflow-y: auto;
         scrollbar-width: thin;
         scrollbar-color: #C5D8A4 transparent;
@@ -47,43 +38,89 @@
     #food-dropdown::-webkit-scrollbar { width: 4px; }
     #food-dropdown::-webkit-scrollbar-thumb { background: #C5D8A4; border-radius: 99px; }
 
-    .food-tag {
-        display: inline-flex;
+    .dropdown-item { transition: background .15s; cursor: pointer; }
+    .dropdown-item:hover { background: #EDF3E4; }
+
+    /* ── Daftar Makanan yang sudah ditambahkan ── */
+    .food-list-item {
+        display: flex;
         align-items: center;
-        gap: 6px;
-        background: #EDF3E4;
-        border: 1px solid #C5D8A4;
-        border-radius: 20px;
-        padding: 4px 10px 4px 12px;
-        font-size: .82rem;
-        color: #3C4C25;
-        font-weight: 500;
-        animation: fadeUp .25s ease both;
+        justify-content: space-between;
+        padding: 10px 14px;
+        background: #F7FAF2;
+        border: 1px solid #D6E9B8;
+        border-radius: 12px;
+        animation: slideIn .25s ease both;
+        gap: 10px;
     }
-    .food-tag button {
-        width: 18px; height: 18px;
-        border-radius: 50%;
-        background: #C5D8A4;
-        color: #3C4C25;
-        font-size: .7rem;
+    .food-list-item .food-info { flex: 1; min-width: 0; }
+    .food-list-item .food-name {
+        font-size: .875rem;
+        font-weight: 600;
+        color: #1B1C18;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .food-list-item .food-cal  { font-size: .75rem; color: #6B7558; margin-top: 1px; }
+
+    /* gram editor inline */
+    .gram-editor {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        border: 1px solid #C5D8A4;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+        flex-shrink: 0;
+    }
+    .gram-editor button {
+        width: 28px; height: 28px;
+        font-size: 1rem; font-weight: 400;
+        color: #6B7558;
+        background: transparent;
         display: flex; align-items: center; justify-content: center;
         transition: background .15s;
+        border: none; cursor: pointer;
     }
-    .food-tag button:hover { background: #a3bf7a; }
-
-    .nutr-bar-inner {
-        height: 8px;
-        border-radius: 99px;
-        animation: growBar .8s ease both;
+    .gram-editor button:hover { background: #EDF3E4; color: #3C4C25; }
+    .gram-editor input {
+        width: 52px; height: 28px;
+        text-align: center;
+        font-size: .78rem;
+        font-weight: 700;
+        color: #1B1C18;
+        border: none;
+        border-left: 1px solid #C5D8A4;
+        border-right: 1px solid #C5D8A4;
+        outline: none;
+        background: #fff;
     }
-
-    #result-panel.has-result {
-        animation: fadeUp .4s ease both;
+    .gram-unit {
+        font-size: .7rem;
+        color: #6B7558;
+        padding-right: 8px;
+        background: #fff;
+        height: 28px;
+        display: flex; align-items: center;
     }
+    .food-remove-btn {
+        width: 26px; height: 26px; border-radius: 50%;
+        background: #FEE2E2; color: #B91C1C;
+        font-size: .85rem;
+        display: flex; align-items: center; justify-content: center;
+        border: none; cursor: pointer;
+        flex-shrink: 0;
+        transition: background .15s;
+    }
+    .food-remove-btn:hover { background: #FECACA; }
 
+    /* ── Hitung button ── */
     #btn-hitung:not(:disabled) { animation: pulse-ring 2.5s ease infinite; }
-    #btn-hitung:disabled { opacity: .55; cursor: not-allowed; animation: none; }
+    #btn-hitung:disabled { opacity: .5; cursor: not-allowed; animation: none; }
 
+    /* ── Status badge ── */
     .status-badge {
         display: inline-flex; align-items: center; gap: 4px;
         padding: 2px 8px; border-radius: 4px;
@@ -94,60 +131,65 @@
     .status-cukup  { background: #FEF9C3; color: #A16207; }
     .status-batasi { background: #FEE2E2; color: #B91C1C; }
 
-    .history-item { transition: background .18s; cursor: default; }
-    .history-item:hover { background: #F4F8ED; border-radius: 12px; }
-
-    .dropdown-item { transition: background .15s; }
-    .dropdown-item:hover { background: #EDF3E4; }
-
-    .hero-section {
-        background: linear-gradient(135deg, #C5D8A4 0%, #dfeece 60%, #eef5e5 100%);
-    }
-
-    .preset-chip.active {
-        border-color: #3C4C25 !important;
-        background-color: #EDF3E4 !important;
-        color: #3C4C25 !important;
-        font-weight: 600;
-    }
-
+    /* ── Chart bars ── */
     #bar-prot-v, #bar-fat-v, #bar-carb-v {
         min-height: 6px;
-        animation: growBarV .8s cubic-bezier(.4,0,.2,1) both;
         transition: height .7s cubic-bezier(.4,0,.2,1);
     }
-
-    .alt-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 0;
-        border-bottom: 1px solid #F0F0EC;
-    }
-    .alt-row:last-child { border-bottom: none; }
-    .alt-left  { font-size: .8rem; color: #6B7558; }
-    .alt-left .alt-name  { font-weight: 600; color: #1B1C18; font-size: .85rem; }
-    .alt-left .alt-cal   { font-size: .75rem; color: #6B7558; margin-top: 1px; }
-    .alt-right { font-size: .8rem; color: #6B7558; text-align: right; }
-    .alt-right .alt-name { font-weight: 600; color: #3C4C25; font-size: .85rem; }
-    .alt-right .alt-cal  { font-size: .75rem; color: #6B7558; margin-top: 1px; }
-    .alt-arrow-icon {
-        width: 28px; height: 28px;
-        display: flex; align-items: center; justify-content: center;
-        color: #6B7558; font-size: 1.1rem; flex-shrink: 0;
-        margin: 0 8px;
+    .nutr-bar-inner {
+        height: 8px; border-radius: 99px;
+        animation: growBar .8s ease both;
     }
 
+    /* ── History rows ── */
     .history-row {
-        display: flex;
-        align-items: center;
+        display: flex; align-items: center;
         justify-content: space-between;
         padding: 12px 0;
         border-bottom: 1px solid #F0F0EC;
     }
     .history-row:last-child { border-bottom: none; }
-    .tip-row  { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; }
-    .tip-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .tip-row { display:flex; align-items:flex-start; gap:10px; padding:6px 0; }
+    .tip-icon { font-size:1.1rem; flex-shrink:0; margin-top:1px; }
+
+    .hero-section {
+        background: linear-gradient(135deg, #C5D8A4 0%, #dfeece 60%, #eef5e5 100%);
+    }
+
+    /* ── Empty state placeholder ── */
+    #food-list-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0 8px;
+        color: #9CA3AF;
+        font-size: .82rem;
+        gap: 6px;
+    }
+    #food-list-empty i { font-size: 1.6rem; color: #C5D8A4; }
+
+    /* ── Step labels ── */
+    .step-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: .78rem;
+        font-weight: 700;
+        color: #6B7558;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .step-label .step-num {
+        width: 20px; height: 20px;
+        border-radius: 50%;
+        background: #3C4C25;
+        color: #fff;
+        font-size: .65rem;
+        font-weight: 800;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
 </style>
 @endpush
 
@@ -157,8 +199,6 @@
 <section class="hero-section pt-40 pb-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-24">
-
-            {{-- Teks kiri --}}
             <div class="flex-1 max-w-xl text-center lg:text-left">
                 <span class="inline-flex items-center gap-2 text-xs font-semibold text-be-green bg-white border border-be-highlight px-3 py-1 rounded-full mb-4">
                     <i class='bx bx-calculator'></i> Sesuai Standar TKPI
@@ -167,21 +207,17 @@
                     Kalkulator Gizi
                 </h1>
                 <p class="mt-4 text-be-muted text-base leading-relaxed">
-                    Hitung kandungan nutrisi makananmu dengan lebih akurat menggunakan standar
+                    Hitung kandungan nutrisi makananmu dengan akurat menggunakan standar
                     <strong class="text-be-dark">Tabel Komposisi Pangan Indonesia (TKPI)</strong>.
                     Mulailah hidup lebih sehat dari setiap suapan.
                 </p>
             </div>
-
-            {{-- Ilustrasi kanan --}}
-            <div class="w-full max-w-sm sm:max-w-sm lg:max-w-sm flex justify-center">
+            <div class="w-full max-w-sm flex justify-center">
                 <div class="w-full aspect-[4/3] rounded-[32px] overflow-hidden shadow-2xl float-anim">
                     <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=640&q=80"
-                         alt="Makanan Sehat Nusantara"
-                         class="w-full h-full object-cover">
+                         alt="Makanan Sehat" class="w-full h-full object-cover">
                 </div>
             </div>
-
         </div>
     </div>
 </section>
@@ -189,12 +225,16 @@
 <!-- MAIN CONTENT -->
 <section class="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-5 gap-8">
 
-    <!-- LEFT COLUMN -->
+    <!-- ═══════════════════════════
+         LEFT COLUMN
+    ════════════════════════════ -->
     <div class="lg:col-span-3 space-y-6">
 
         {{-- ── Input Makanan Card ── --}}
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 fade-up">
-            <div class="flex items-center justify-between mb-5">
+
+            {{-- Header --}}
+            <div class="flex items-center justify-between mb-6">
                 <h2 class="font-heading font-bold text-be-dark text-xl">Input Makanan</h2>
                 <button id="btn-reset"
                         class="text-xs text-be-muted hover:text-red-500 flex items-center gap-1 transition-colors">
@@ -202,14 +242,18 @@
                 </button>
             </div>
 
-            {{-- Search Nama Makanan --}}
-            <div class="relative mb-5">
-                <label class="block text-sm font-medium text-be-dark mb-1.5">Nama Makanan (Sesuai TKPI)</label>
+            {{-- ─── STEP 1: Cari & Pilih Makanan ─── --}}
+            <div class="mb-5">
+                <div class="step-label">
+                    <span class="step-num">1</span>
+                    Cari & Pilih Makanan
+                </div>
+
                 <div class="relative">
-                    <i class='bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-be-muted text-lg'></i>
+                    <i class='bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-be-muted text-lg z-10'></i>
                     <input id="food-search"
                            type="text"
-                           placeholder="Ketik bahan mentah/masakan (ex: Beras giling, Ayam ras)"
+                           placeholder="Ketik nama makanan (contoh: Nasi putih, Ayam rebus…)"
                            autocomplete="off"
                            class="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-200 bg-[#FAFAFA]
                                   text-sm text-be-dark placeholder-gray-400
@@ -218,144 +262,125 @@
                     <div id="search-spinner" class="absolute right-3 top-1/2 -translate-y-1/2 hidden">
                         <div class="w-4 h-4 border-2 border-be-highlight border-t-be-green rounded-full animate-spin"></div>
                     </div>
-                </div>
-                
-                {{-- Dropdown hasil search --}}
-                <div id="food-dropdown"
-                     class="hidden absolute z-30 w-full mt-1 bg-white border border-gray-200
-                            rounded-xl shadow-lg overflow-hidden">
-                </div>
 
-                {{-- Helper Text TKPI & BDD --}}
-                <div class="mt-2.5 p-3 bg-be-light/50 border border-be-highlight/30 rounded-xl flex items-start gap-2">
-                    <i class='bx bx-info-circle text-be-green mt-0.5 text-base'></i>
-                    <p class="text-[11px] text-be-muted leading-relaxed">
-                        Pilih makanan dari saran yang muncul saat mengetik. Nilai nutrisi dihitung berdasarkan standar <strong>Berat Dapat Dimakan (BDD) per 100 gram</strong> sesuai database asli TKPI.
-                    </p>
-                </div>
-            </div>
-
-            {{-- Bahan Utama: preset chips + tambah custom --}}
-            <div class="mb-5">
-                <label class="block text-sm font-medium text-be-dark mb-2">
-                    Bahan Utama <span class="text-gray-400 font-normal">(Opsional)</span>
-                </label>
-
-                {{-- Preset bahan chips --}}
-                <div class="flex flex-wrap gap-2 mb-2" id="preset-chips">
-                    @php
-                        $presetBahan = [
-                            'Nasi', 'Nasi tim', 'Nasi beras merah', 
-                            'Bihun, mentah', 'Nasi jagung', 'Jagung muda, rebus', 
-                            'Mi basah', 'Mi kering', 'Roti putih', 'Tepung terigu'
-                        ];
-                    @endphp
-                    @foreach($presetBahan as $bahan)
-                        <button type="button"
-                                onclick="togglePreset(this, '{{ $bahan }}')"
-                                class="preset-chip inline-flex items-center gap-1 px-3 py-1.5 rounded-full
-                                       text-xs font-medium border border-gray-200 bg-be-light text-gray-600
-                                       hover:border-be-highlight hover:bg-be-light hover:text-be-primary
-                                       transition-all duration-150"
-                                data-name="{{ $bahan }}">
-                            {{ $bahan }}
-                        </button>
-                    @endforeach
-
-                    {{-- Tombol + Tambah --}}
-                    <button type="button" id="btn-tambah-custom"
-                            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full
-                                   text-xs font-medium border border-dashed border-gray-300 text-gray-500
-                                   hover:border-be-green hover:text-be-green transition-all duration-150">
-                        <i class='bx bx-plus text-sm'></i> Tambah
-                    </button>
-                </div>
-
-                {{-- Input tambah bahan custom (hidden) --}}
-                <div id="custom-bahan-wrap" class="hidden gap-2 mt-2" style="display:none;">
-                    <input id="custom-bahan-input" type="text"
-                           placeholder="Nama bahan lainnya…"
-                           class="flex-1 py-2 px-3 rounded-xl border border-gray-200 bg-[#FAFAFA]
-                                  text-sm text-be-dark focus:outline-none focus:ring-2 focus:ring-be-highlight">
-                    <button type="button" id="btn-tambah-bahan-ok"
-                            class="px-4 py-2 bg-be-primary text-white text-xs font-semibold rounded-xl
-                                   hover:bg-be-button transition">
-                        Tambah
-                    </button>
-                </div>
-
-                {{-- Tag bahan yang sudah dipilih --}}
-                <div id="food-tags" class="flex flex-wrap gap-2 mt-2 min-h-[28px]">
-                    <span id="tags-placeholder" class="text-xs text-gray-400 italic self-center hidden">
-                        Belum ada bahan dipilih…
-                    </span>
-                </div>
-            </div>
-
-            {{-- Porsi & Satuan --}}
-            <div class="grid grid-cols-2 gap-4 mb-5">
-                {{-- Porsi --}}
-                <div>
-                    <label class="block text-sm font-medium text-be-dark mb-1.5">Porsi</label>
-                    <div class="flex items-center h-[46px] border border-gray-200 rounded-xl overflow-hidden bg-[#FAFAFA]">
-                        <button id="qty-minus" type="button"
-                                class="h-full px-3.5 text-gray-400 hover:text-be-dark hover:bg-be-light
-                                       transition text-xl font-light select-none">−</button>
-                        <input id="qty-input" type="number" value="1" min="0.5" step="0.5"
-                               class="flex-1 h-full text-center text-sm font-semibold text-be-dark bg-transparent
-                                      border-x border-gray-200 focus:outline-none">
-                        <button id="qty-plus" type="button"
-                                class="h-full px-3.5 text-gray-400 hover:text-be-dark hover:bg-be-light
-                                       transition text-xl font-light select-none">+</button>
+                    {{-- Dropdown hasil search --}}
+                    <div id="food-dropdown"
+                         class="hidden absolute z-30 w-full mt-1 bg-white border border-gray-200
+                                rounded-xl shadow-lg overflow-hidden">
                     </div>
                 </div>
-                {{-- Satuan --}}
-                <div>
-                    <label class="block text-sm font-medium text-be-dark mb-1.5">Satuan</label>
-                    <select id="qty-unit"
-                            class="w-full h-[46px] px-3 rounded-xl border border-gray-200 bg-[#FAFAFA]
-                                   text-sm text-be-dark focus:outline-none focus:ring-2 focus:ring-be-highlight
-                                   appearance-none cursor-pointer"
-                            style="background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7558' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 14px center;">
-                        <option value="200">Piring (~200g)</option>
-                        <option value="150">Mangkok (~150g)</option>
-                        <option value="100" selected>Porsi (~100g)</option>
-                        <option value="50">Setengah Porsi (~50g)</option>
-                        <option value="custom">Gram Custom…</option>
-                    </select>
+
+                <p class="mt-2 text-[11px] text-be-muted leading-relaxed flex items-start gap-1.5">
+                    <i class='bx bx-info-circle mt-0.5 text-be-green'></i>
+                    Pilih dari daftar yang muncul. Nilai gizi dihitung per <strong>100 gram</strong> sesuai standar TKPI.
+                </p>
+            </div>
+
+            {{-- ─── STEP 2: Tentukan Berat ─── --}}
+            <div class="mb-5" id="weight-step">
+                <div class="step-label">
+                    <span class="step-num">2</span>
+                    Tentukan Berat Makanan
+                </div>
+
+                <div class="flex items-center gap-3">
+                    {{-- Tombol minus --}}
+                    <button id="qty-minus" type="button"
+                            class="w-10 h-10 rounded-xl border border-gray-200 bg-[#FAFAFA]
+                                   flex items-center justify-center text-xl text-gray-400
+                                   hover:text-be-dark hover:bg-be-light transition select-none">−</button>
+
+                    {{-- Input gram --}}
+                    <div class="flex-1 relative">
+                        <input id="qty-gram" type="number" value="100" min="1" step="10"
+                               class="w-full h-10 text-center font-heading font-bold text-lg text-be-dark
+                                      border border-gray-200 bg-[#FAFAFA] rounded-xl
+                                      focus:outline-none focus:ring-2 focus:ring-be-highlight transition
+                                      pr-12">
+                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-be-muted font-medium">gram</span>
+                    </div>
+
+                    {{-- Tombol plus --}}
+                    <button id="qty-plus" type="button"
+                            class="w-10 h-10 rounded-xl border border-gray-200 bg-[#FAFAFA]
+                                   flex items-center justify-center text-xl text-gray-400
+                                   hover:text-be-dark hover:bg-be-light transition select-none">+</button>
+                </div>
+
+                {{-- Shortcut gram chips --}}
+                <div class="flex gap-2 mt-3 flex-wrap">
+                    @foreach([50, 100, 150, 200, 250] as $g)
+                    <button type="button"
+                            onclick="setGram({{ $g }})"
+                            class="gram-shortcut px-3 py-1 rounded-full text-xs font-semibold
+                                   border border-gray-200 bg-be-light text-be-muted
+                                   hover:border-be-green hover:text-be-primary transition-all
+                                   {{ $g == 100 ? 'border-be-green text-be-primary' : '' }}"
+                            data-gram="{{ $g }}">
+                        {{ $g }}g
+                    </button>
+                    @endforeach
                 </div>
             </div>
 
-            {{-- Custom gram input (hidden by default) --}}
-            <div id="custom-gram-wrap" class="hidden mb-5">
-                <label class="block text-sm font-medium text-be-dark mb-1.5">Berat Custom (gram)</label>
-                <input id="custom-gram" type="number" min="1" placeholder="Masukkan berat dalam gram"
-                       class="w-full h-[46px] py-2 px-4 rounded-xl border border-gray-200 bg-[#FAFAFA] text-sm
-                              focus:outline-none focus:ring-2 focus:ring-be-highlight text-be-dark">
+            {{-- ─── STEP 3: Tambah ke Daftar ─── --}}
+            <div class="mb-5">
+                <button id="btn-tambah" disabled
+                        class="w-full py-2.5 rounded-xl border-2 border-dashed border-be-highlight
+                               bg-be-light/50 text-be-primary text-sm font-semibold
+                               flex items-center justify-center gap-2
+                               hover:bg-be-light hover:border-be-green transition
+                               disabled:opacity-40 disabled:cursor-not-allowed">
+                    <i class='bx bx-plus-circle text-lg'></i>
+                    Tambahkan ke Daftar
+                </button>
             </div>
 
-            {{-- Hitung button --}}
-            <button id="btn-hitung" disabled
-                    class="w-full bg-be-primary text-white font-heading font-semibold
-                           py-3.5 rounded-xl text-sm hover:bg-be-button transition-colors
-                           flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                Hitung Kandungan Nutrisi
-            </button>
-        </div>
+            {{-- ─── STEP 4: Daftar Makanan ─── --}}
+            <div class="mb-5">
+                <div class="step-label">
+                    <span class="step-num">3</span>
+                    Daftar Makanan
+                    <span id="food-count-badge" class="hidden ml-auto text-[10px] font-bold
+                           bg-be-primary text-white px-2 py-0.5 rounded-full">0</span>
+                </div>
 
-        {{-- ── Alternatif Lebih Sehat Card — sesuai gambar ── --}}
-        <div id="alt-card" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-6 fade-up">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="w-9 h-9 rounded-xl bg-be-light flex items-center justify-center text-be-green text-lg">
-                    <i class='bx bxs-bulb'></i>
-                </span>
-                <h2 class="font-heading font-bold text-be-dark text-base">Alternatif Lebih Sehat</h2>
+                {{-- Container daftar --}}
+                <div id="food-list" class="space-y-2 min-h-[70px]">
+                    <div id="food-list-empty">
+                        <i class='bx bx-bowl-hot'></i>
+                        <span>Belum ada makanan. Cari & tambahkan di atas.</span>
+                    </div>
+                </div>
+
+                {{-- Total kalori sementara --}}
+                <div id="total-preview" class="hidden mt-3 flex items-center justify-between
+                     px-4 py-2.5 bg-be-primary/5 border border-be-highlight/50 rounded-xl">
+                    <span class="text-xs text-be-muted font-medium">Estimasi total kalori</span>
+                    <span id="total-preview-cal" class="text-sm font-heading font-bold text-be-primary">0 kal</span>
+                </div>
             </div>
-            {{-- List alternatif: sebelum → sesudah --}}
-            <div id="alt-list" class="divide-y divide-gray-100"></div>
+
+            {{-- Divider --}}
+            <div class="border-t border-dashed border-gray-200 mb-5"></div>
+
+            {{-- ─── STEP 5: Hitung ─── --}}
+            <div>
+                <div class="step-label mb-3">
+                    <span class="step-num">4</span>
+                    Hitung Total Nutrisi
+                </div>
+                <button id="btn-hitung" disabled
+                        class="w-full bg-be-primary text-white font-heading font-semibold
+                               py-3.5 rounded-xl text-sm hover:bg-be-button transition-colors
+                               flex items-center justify-center gap-2">
+                    <i class='bx bx-calculator text-lg'></i>
+                    Hitung Kandungan Nutrisi
+                </button>
+            </div>
         </div>
 
-        {{-- ── Pengingat Sehat Card — sesuai gambar ── --}}
+        {{-- ── Pengingat Sehat Card ── --}}
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 fade-up">
             <div class="flex items-center gap-3 mb-4">
                 <span class="w-9 h-9 rounded-xl bg-be-light flex items-center justify-center text-be-green text-lg">
@@ -364,37 +389,24 @@
                 <h2 class="font-heading font-bold text-be-dark text-base">Pengingat Sehat</h2>
             </div>
             <div class="space-y-0.5 text-sm text-be-muted">
+                @foreach(['Minum 8 gelas air hari ini','Kurangi konsumsi gula berlebih','Hindari gorengan terlalu sering','Perbanyak makan sayur','Jangan lewatkan sarapan'] as $tip)
                 <div class="tip-row">
-                    <span class="tip-icon"><i class='bx bx-check'></i></span>
-                    <span>Minum 8 gelas air hari ini</span>
+                    <span class="tip-icon text-be-green"><i class='bx bx-check-circle'></i></span>
+                    <span>{{ $tip }}</span>
                 </div>
-                <div class="tip-row">
-                      <span class="tip-icon"><i class='bx bx-check'></i></span>
-                    <span>Kurangi konsumsi gula berlebih</span>
-                </div>
-                <div class="tip-row">
-                    <span class="tip-icon"><i class='bx bx-check'></i></span>
-                    <span>Hindari gorengan terlalu sering</span>
-                </div>
-                <div class="tip-row">
-                    <span class="tip-icon"><i class='bx bx-check'></i></span>
-                    <span>Perbanyak makan sayur</span>
-                </div>
-                <div class="tip-row">
-                    <span class="tip-icon"><i class='bx bx-check'></i></span>
-                    <span>Jangan lewatkan sarapan</span>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
 
-    <!-- RIGHT COLUMN -->
+    <!-- ═══════════════════════════
+         RIGHT COLUMN
+    ════════════════════════════ -->
     <div class="lg:col-span-2 space-y-6">
 
         {{-- ── Hasil Analisis Card ── --}}
         <div id="result-panel"
              class="bg-be-primary rounded-2xl shadow-md p-6 text-white relative overflow-hidden fade-up">
-            {{-- Decorative circles --}}
             <div class="absolute -top-8 -right-8 w-32 h-32 bg-white/5 rounded-full pointer-events-none"></div>
             <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-white/5 rounded-full pointer-events-none"></div>
 
@@ -411,15 +423,15 @@
                 <p class="text-xs text-white/50 uppercase tracking-widest mb-1">Total Kalori</p>
                 <div class="flex items-end justify-center gap-1">
                     <span id="res-cal" class="text-6xl font-heading font-extrabold leading-none">—</span>
-                    <span class="text-xl text-white/60 mb-1">kcal</span>
+                    <span class="text-xl text-white/60 mb-1">kal</span>
                 </div>
-                {{-- Progress bar kalori --}}
                 <div class="mt-3 bg-white/20 rounded-full h-1.5 overflow-hidden mx-4">
                     <div id="cal-bar" class="h-full bg-be-highlight transition-all duration-700" style="width:0%"></div>
                 </div>
                 <p class="text-xs text-white/40 mt-1.5" id="cal-bar-label">dari kebutuhan harian</p>
             </div>
 
+            {{-- Makro --}}
             <div class="grid grid-cols-3 gap-3 mb-6 relative">
                 <div class="bg-white/10 rounded-2xl p-4 text-center">
                     <p class="text-xs text-white/50 mb-2 font-medium">Protein</p>
@@ -440,6 +452,7 @@
 
             <div class="border-t border-white/10 mb-5"></div>
 
+            {{-- Bar chart vertikal --}}
             <div class="flex items-end justify-around gap-3 px-4" style="height: 90px;">
                 <div class="flex flex-col items-center gap-1.5 flex-1">
                     <div class="w-full flex items-end justify-center" style="height:70px;">
@@ -466,25 +479,14 @@
                     <span class="text-xs text-white/50">Karbo</span>
                 </div>
             </div>
-
-            <div id="result-empty"
-                 class="flex flex-col items-center justify-center bg-be-primary rounded-2xl text-center px-6">
-            </div>
         </div>
 
-        {{-- ── Riwayat Card — sesuai gambar ── --}}
+        {{-- ── Riwayat Card ── --}}
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 fade-up">
             <div class="flex items-center justify-between mb-2">
                 <h2 class="font-heading font-bold text-be-dark text-base">Riwayat</h2>
-                @auth
-                <a href="{{ route('calorie_logs.index') }}"
-                   class="text-xs text-be-green font-semibold hover:underline">Lihat Semua →</a>
-                @else
-                <span class="text-xs text-be-muted">Login untuk melihat</span>
-                @endauth
             </div>
 
-            {{-- Riwayat dari DB (jika login) --}}
             <div id="history-list">
                 @auth
                     @forelse($recentLogs as $log)
@@ -494,7 +496,9 @@
                                 <i class='bx bx-time-five'></i>
                             </div>
                             <div class="min-w-0">
-                                <p class="text-sm font-semibold text-be-dark leading-tight truncate">{{ $log->food?->food_name ?? 'Makanan Umum' }}</p>
+                                <p class="text-sm font-semibold text-be-dark leading-tight truncate">
+                                    {{ $log->food?->food_name ?? 'Makanan Umum' }}
+                                </p>
                                 <p class="text-xs text-be-muted">{{ \Carbon\Carbon::parse($log->logged_at)->diffForHumans() }}</p>
                             </div>
                         </div>
@@ -509,10 +513,6 @@
                         </div>
                     </div>
                     @empty
-                    <div class="text-center py-6">
-                        <i class='bx bx-history text-3xl text-be-muted/40'></i>
-                        <p class="text-xs text-be-muted mt-2">Belum ada riwayat konsumsi</p>
-                    </div>
                     @endforelse
                 @else
                 <div class="text-center py-6">
@@ -525,11 +525,11 @@
                 @endauth
             </div>
 
-            {{-- Riwayat dari sesi kalkulator (JS-rendered) --}}
+            {{-- Riwayat sesi kalkulator (dari JS) --}}
             <div id="session-history"></div>
         </div>
 
-        {{-- ── Info TKPI Card — sesuai gambar ── --}}
+        {{-- ── Info TKPI Card ── --}}
         <div class="bg-be-light rounded-2xl border p-5 fade-up">
             <div class="flex gap-3">
                 <div class="w-8 h-8 rounded-full bg-gray-200/70 flex items-center justify-center text-be-muted flex-shrink-0">
@@ -538,8 +538,8 @@
                 <div>
                     <p class="text-sm font-bold text-be-dark mb-1">Mengapa TKPI?</p>
                     <p class="text-xs text-be-muted leading-relaxed">
-                        Tabel Komposisi Pangan Indonesia disesuaikan dengan jenis bahan baku dan teknik memasak yang
-                        umum digunakan di Indonesia, sehingga dapat memberikan hasil yang lebih relevan dibanding basis data internasional.
+                        Tabel Komposisi Pangan Indonesia disesuaikan dengan jenis bahan baku dan teknik memasak
+                        umum di Indonesia, sehingga lebih relevan dibanding basis data internasional.
                     </p>
                 </div>
             </div>
@@ -552,131 +552,88 @@
 
 @push('scripts')
 <script>
-/* ================================================================
-   BetterEat — Kalkulator Gizi  (JavaScript)
-   Fixed: calories_kcal field name, alt card design, history badges
-================================================================ */
-
 const CSRF = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 
 // ── State ──
-let selectedFoods  = [];  
-let selectedPresets = new Set();
-let searchTimer    = null;
+let selectedFoods  = [];   // [{ food_id, food_name, calories_kcal, protein_g, fat_g, carbs_g, gram }]
+let pendingFood    = null;  // makanan yang dipilih dari dropdown, belum ditambahkan
 let lastResult     = null;
-let lastInputFood  = null; 
+let searchTimer    = null;
 
-// ── DOM refs ──
-const foodSearch       = document.getElementById('food-search');
-const dropdown         = document.getElementById('food-dropdown');
-const foodTagsWrap     = document.getElementById('food-tags');
-const tagsPlaceholder  = document.getElementById('tags-placeholder');
-const qtyInput         = document.getElementById('qty-input');
-const qtyUnit          = document.getElementById('qty-unit');
-const qtyMinus         = document.getElementById('qty-minus');
-const qtyPlus          = document.getElementById('qty-plus');
-const customGramWrap   = document.getElementById('custom-gram-wrap');
-const customGram       = document.getElementById('custom-gram');
-const btnHitung        = document.getElementById('btn-hitung');
-const btnReset         = document.getElementById('btn-reset');
-const spinner          = document.getElementById('search-spinner');
-const btnTambahCustom  = document.getElementById('btn-tambah-custom');
-const customBahanWrap  = document.getElementById('custom-bahan-wrap');
-const customBahanInput = document.getElementById('custom-bahan-input');
-const btnTambahOk      = document.getElementById('btn-tambah-bahan-ok');
+// ── DOM ──
+const foodSearch      = document.getElementById('food-search');
+const dropdown        = document.getElementById('food-dropdown');
+const spinner         = document.getElementById('search-spinner');
+const qtyGram         = document.getElementById('qty-gram');
+const qtyMinus        = document.getElementById('qty-minus');
+const qtyPlus         = document.getElementById('qty-plus');
+const btnTambah       = document.getElementById('btn-tambah');
+const btnHitung       = document.getElementById('btn-hitung');
+const btnReset        = document.getElementById('btn-reset');
+const foodList        = document.getElementById('food-list');
+const foodListEmpty   = document.getElementById('food-list-empty');
+const foodCountBadge  = document.getElementById('food-count-badge');
+const totalPreview    = document.getElementById('total-preview');
+const totalPreviewCal = document.getElementById('total-preview-cal');
+const sessionHistory  = document.getElementById('session-history');
 
-// Result refs
-const resEmpty       = document.getElementById('result-empty');
-const resCal         = document.getElementById('res-cal');
-const resProt        = document.getElementById('res-prot');
-const resFat         = document.getElementById('res-fat');
-const resCarb        = document.getElementById('res-carb');
-const calBar         = document.getElementById('cal-bar');
-const calBarLabel    = document.getElementById('cal-bar-label');
-const barProtV       = document.getElementById('bar-prot-v');
-const barFatV        = document.getElementById('bar-fat-v');
-const barCarbV       = document.getElementById('bar-carb-v');
-const statusBadge    = document.getElementById('result-status-badge');
-const statusText     = document.getElementById('result-status-text');
-const altCard        = document.getElementById('alt-card');
-const altList        = document.getElementById('alt-list');
-const sessionHistory = document.getElementById('session-history');
+// Result
+const resCal      = document.getElementById('res-cal');
+const resProt     = document.getElementById('res-prot');
+const resFat      = document.getElementById('res-fat');
+const resCarb     = document.getElementById('res-carb');
+const calBar      = document.getElementById('cal-bar');
+const calBarLabel = document.getElementById('cal-bar-label');
+const barProtV    = document.getElementById('bar-prot-v');
+const barFatV     = document.getElementById('bar-fat-v');
+const barCarbV    = document.getElementById('bar-carb-v');
+const statusBadge = document.getElementById('result-status-badge');
+const statusText  = document.getElementById('result-status-text');
 
 /* ══════════════════════════════════════
-   PRESET CHIP TOGGLE
+   GRAM SHORTCUTS
 ══════════════════════════════════════ */
-function togglePreset(btn, name) {
-    if (selectedPresets.has(name)) {
-        selectedPresets.delete(name);
-        btn.classList.remove('active');
-        btn.textContent = name;
-        selectedFoods = selectedFoods.filter(f => f.food_name !== name);
-        renderTags();
-    } else {
-        selectedPresets.add(name);
-        btn.classList.add('active');
-        fetchAndAddFood(name, btn);
-    }
-    updateBtn();
+function setGram(val) {
+    qtyGram.value = val;
+    document.querySelectorAll('.gram-shortcut').forEach(btn => {
+        const isActive = parseInt(btn.dataset.gram) === val;
+        btn.classList.toggle('border-be-green', isActive);
+        btn.classList.toggle('text-be-primary', isActive);
+        btn.classList.toggle('border-gray-200', !isActive);
+        btn.classList.toggle('text-be-muted', !isActive);
+    });
 }
 
-async function fetchAndAddFood(keyword, chipBtn) {
-    try {
-        const res  = await fetch(`/kalkulator/search?q=${encodeURIComponent(keyword)}`);
-        const data = await res.json();
-        if (data.length > 0) {
-            const exact = data.find(f => f.food_name.toLowerCase() === keyword.toLowerCase()) ?? data[0];
-            if (!selectedFoods.find(f => f.food_id === exact.food_id)) {
-                selectedFoods.push(exact);
-                renderTags();
-            }
-        } else {
-            if (!selectedFoods.find(f => f.food_name === keyword)) {
-                selectedFoods.push({
-                    food_id: null, food_name: keyword,
-                    calories_kcal: 0, protein_g: 0, fat_g: 0, carbs_g: 0,
-                    notInDb: true
-                });
-                renderTags();
-            }
-        }
-    } catch (e) { console.error(e); }
-    updateBtn();
+qtyMinus.addEventListener('click', () => {
+    const v = parseInt(qtyGram.value) || 100;
+    qtyGram.value = Math.max(10, v - 10);
+    syncGramShortcut();
+});
+qtyPlus.addEventListener('click', () => {
+    qtyGram.value = (parseInt(qtyGram.value) || 100) + 10;
+    syncGramShortcut();
+});
+qtyGram.addEventListener('input', syncGramShortcut);
+
+function syncGramShortcut() {
+    const v = parseInt(qtyGram.value);
+    document.querySelectorAll('.gram-shortcut').forEach(btn => {
+        const isActive = parseInt(btn.dataset.gram) === v;
+        btn.classList.toggle('border-be-green', isActive);
+        btn.classList.toggle('text-be-primary', isActive);
+        btn.classList.toggle('border-gray-200', !isActive);
+        btn.classList.toggle('text-be-muted', !isActive);
+    });
 }
-
-btnTambahCustom.addEventListener('click', () => {
-    const isHidden = customBahanWrap.style.display === 'none' || customBahanWrap.style.display === '';
-    if (isHidden) {
-        customBahanWrap.style.display = 'flex';
-        customBahanInput.focus();
-    } else {
-        customBahanWrap.style.display = 'none';
-    }
-});
-
-btnTambahOk.addEventListener('click', async () => {
-    const val = customBahanInput.value.trim();
-
-    if (!val) return;
-
-    await fetchAndAddFood(val);
-
-    customBahanInput.value = '';
-    customBahanWrap.classList.add('hidden');
-
-    renderTags();
-    updateBtn();
-});
-
-customBahanInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') btnTambahOk.click();
-});
 
 /* ══════════════════════════════════════
    SEARCH AUTOCOMPLETE
 ══════════════════════════════════════ */
 foodSearch.addEventListener('input', () => {
     clearTimeout(searchTimer);
+    pendingFood = null;
+    btnTambah.disabled = true;
+
     const q = foodSearch.value.trim();
     if (q.length < 2) { closeDropdown(); return; }
 
@@ -693,28 +650,38 @@ foodSearch.addEventListener('input', () => {
 
 function renderDropdown(foods) {
     dropdown.innerHTML = '';
+
     if (!foods.length) {
-        dropdown.innerHTML = `<div class="px-4 py-3 text-xs text-be-muted text-center">Makanan tidak ditemukan di database TKPI</div>`;
+        dropdown.innerHTML = `
+            <div class="px-4 py-4 text-center">
+                <i class='bx bx-search-alt text-2xl text-gray-300'></i>
+                <p class="text-xs text-be-muted mt-1">Makanan tidak ditemukan di database TKPI</p>
+            </div>`;
     } else {
         foods.forEach(f => {
             const item = document.createElement('div');
-            item.className = 'dropdown-item flex items-center justify-between px-4 py-2.5 cursor-pointer';
+            item.className = 'dropdown-item flex items-center justify-between px-4 py-2.5';
             item.innerHTML = `
-                <div>
-                    <p class="text-sm font-medium text-be-dark">${escHtml(f.food_name)}</p>
-                    <p class="text-xs text-be-muted">${f.calories_kcal} kcal / 100g</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-semibold text-be-dark truncate">${escHtml(f.food_name)}</p>
+                    <p class="text-xs text-be-muted">${f.calories_kcal} kal per 100g</p>
                 </div>
-                <i class='bx bx-plus-circle text-be-green text-xl'></i>
+                <i class='bx bx-chevron-right text-be-muted text-lg ml-2'></i>
             `;
-            item.addEventListener('click', () => {
-                addFood(f);
-                foodSearch.value = '';
-                closeDropdown();
-            });
+            item.addEventListener('click', () => selectFood(f));
             dropdown.appendChild(item);
         });
     }
     dropdown.classList.remove('hidden');
+}
+
+function selectFood(food) {
+    pendingFood = food;
+    foodSearch.value = food.food_name;
+    closeDropdown();
+    btnTambah.disabled = false;
+    // Auto-focus ke tombol tambah
+    btnTambah.focus();
 }
 
 function closeDropdown() {
@@ -727,122 +694,155 @@ document.addEventListener('click', e => {
 });
 
 /* ══════════════════════════════════════
-   ADD / REMOVE FOOD
+   TAMBAH KE DAFTAR
 ══════════════════════════════════════ */
-function addFood(food) {
-    if (selectedFoods.find(f => f.food_id && f.food_id === food.food_id)) return;
-    selectedFoods.push(food);
-    renderTags();
-    updateBtn();
-}
+btnTambah.addEventListener('click', () => {
+    if (!pendingFood) return;
 
-function removeFood(foodId, foodName) {
-    selectedFoods = selectedFoods.filter(f => !(f.food_id === foodId && f.food_name === foodName));
-    if (selectedPresets.has(foodName)) {
-        selectedPresets.delete(foodName);
-        const chip = document.querySelector(`#preset-chips button[data-name="${CSS.escape(foodName)}"]`);
-        if (chip) {
-            chip.classList.remove('active');
-            chip.textContent = foodName;
-        }
+    const gram = parseInt(qtyGram.value) || 100;
+
+    // Cek duplikat (food_id sama)
+    const existing = selectedFoods.find(f => f.food_id === pendingFood.food_id);
+    if (existing) {
+        // Update gram saja
+        existing.gram = gram;
+        renderFoodList();
+    } else {
+        selectedFoods.push({ ...pendingFood, gram });
+        renderFoodList();
     }
-    renderTags();
-    updateBtn();
-}
 
-function renderTags() {
+    // Reset search
+    foodSearch.value = '';
+    pendingFood = null;
+    btnTambah.disabled = true;
+    setGram(100);
 
-    foodTagsWrap.querySelectorAll('.food-tag').forEach(el => el.remove());
+    updateHitungBtn();
+    updateTotalPreview();
+});
 
-    const hasTags = selectedFoods.length > 0;
+/* ══════════════════════════════════════
+   RENDER DAFTAR MAKANAN
+══════════════════════════════════════ */
+function renderFoodList() {
+    // Hapus item lama kecuali empty state
+    foodList.querySelectorAll('.food-list-item').forEach(el => el.remove());
 
-    tagsPlaceholder.classList.toggle('hidden', hasTags);
+    const isEmpty = selectedFoods.length === 0;
+    foodListEmpty.style.display = isEmpty ? '' : 'none';
+    foodCountBadge.classList.toggle('hidden', isEmpty);
+    foodCountBadge.textContent = selectedFoods.length;
 
-    selectedFoods.forEach(f => {
+    selectedFoods.forEach((f, idx) => {
+        const calEst = Math.round((f.calories_kcal || 0) * f.gram / 100);
 
-        const tag = document.createElement('span');
+        const item = document.createElement('div');
+        item.className = 'food-list-item';
+        item.dataset.idx = idx;
 
-        tag.className = 'food-tag';
+        item.innerHTML = `
+            <div class="food-info">
+                <p class="food-name">${escHtml(f.food_name)}</p>
+                <p class="food-cal" id="cal-est-${idx}">≈ ${calEst} kal</p>
+            </div>
 
-        tag.innerHTML = `
-            <span>${escHtml(f.food_name)}</span>
+            <div class="gram-editor">
+                <button type="button" onclick="changeGramInline(${idx}, -10)">−</button>
+                <input type="number" value="${f.gram}" min="1" step="10"
+                       onchange="setGramInline(${idx}, this.value)"
+                       class="gram-input-${idx}">
+                <span class="gram-unit">g</span>
+            </div>
+
+            <button type="button" class="food-remove-btn" onclick="removeFood(${idx})">
+                &times;
+            </button>
         `;
 
-        const removeBtn = document.createElement('button');
-
-        removeBtn.type = 'button';
-
-        removeBtn.innerHTML = '&times;';
-
-        removeBtn.addEventListener('click', () => {
-            removeFood(f.food_id, f.food_name);
-        });
-
-        tag.appendChild(removeBtn);
-
-        foodTagsWrap.appendChild(tag);
+        foodList.appendChild(item);
     });
+
+    updateTotalPreview();
+    updateHitungBtn();
 }
 
-/* ══════════════════════════════════════
-   QTY CONTROLS
-══════════════════════════════════════ */
-qtyMinus.addEventListener('click', () => {
-    const v = parseFloat(qtyInput.value);
-    if (v > 0.5) qtyInput.value = parseFloat((v - 0.5).toFixed(1));
-});
-qtyPlus.addEventListener('click', () => {
-    qtyInput.value = parseFloat((parseFloat(qtyInput.value) + 0.5).toFixed(1));
-});
-qtyUnit.addEventListener('change', () => {
-    customGramWrap.classList.toggle('hidden', qtyUnit.value !== 'custom');
-});
+function changeGramInline(idx, delta) {
+    const newVal = Math.max(10, (selectedFoods[idx].gram || 100) + delta);
+    selectedFoods[idx].gram = newVal;
+    // update input visual
+    const inp = foodList.querySelector(`.gram-input-${idx}`);
+    if (inp) inp.value = newVal;
+    // update kalori estimasi
+    const calEl = document.getElementById(`cal-est-${idx}`);
+    if (calEl) {
+        const calEst = Math.round((selectedFoods[idx].calories_kcal || 0) * newVal / 100);
+        calEl.textContent = `≈ ${calEst} kal`;
+    }
+    updateTotalPreview();
+}
 
-/* ══════════════════════════════════════
-   UPDATE BUTTON STATE
-══════════════════════════════════════ */
-function updateBtn() {
-    const hasValidFood = selectedFoods.some(f => f.food_id !== null);
-    btnHitung.disabled = !hasValidFood;
+function setGramInline(idx, val) {
+    const gram = Math.max(10, parseInt(val) || 10);
+    selectedFoods[idx].gram = gram;
+    const calEl = document.getElementById(`cal-est-${idx}`);
+    if (calEl) {
+        const calEst = Math.round((selectedFoods[idx].calories_kcal || 0) * gram / 100);
+        calEl.textContent = `≈ ${calEst} kal`;
+    }
+    updateTotalPreview();
+}
+
+function removeFood(idx) {
+    selectedFoods.splice(idx, 1);
+    renderFoodList();
+}
+
+function updateTotalPreview() {
+    const total = selectedFoods.reduce((sum, f) => {
+        return sum + Math.round((f.calories_kcal || 0) * (f.gram || 100) / 100);
+    }, 0);
+
+    const hasFood = selectedFoods.length > 0;
+    totalPreview.classList.toggle('hidden', !hasFood);
+    totalPreviewCal.textContent = `${total} kal`;
+}
+
+function updateHitungBtn() {
+    btnHitung.disabled = selectedFoods.length === 0;
 }
 
 /* ══════════════════════════════════════
    HITUNG
 ══════════════════════════════════════ */
 btnHitung.addEventListener('click', async () => {
-    const validFoods = selectedFoods.filter(f => f.food_id !== null);
-    if (!validFoods.length) return;
+    if (!selectedFoods.length) return;
 
-    let gramPerPortion = qtyUnit.value === 'custom'
-        ? (parseFloat(customGram.value) || 100)
-        : parseFloat(qtyUnit.value);
-
-    const portions  = parseFloat(qtyInput.value) || 1;
-    const totalGram = gramPerPortion * portions;
-
-    const items = validFoods.map(f => ({
+    // Bangun payload: tiap makanan dengan gram masing-masing
+    const items = selectedFoods.map(f => ({
         food_id:       f.food_id,
-        quantity_gram: totalGram,
+        quantity_gram: f.gram || 100,
     }));
 
-    lastInputFood = validFoods[0];
-
     btnHitung.disabled = true;
-    btnHitung.innerHTML = `<span class="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin mr-2"></span> Menghitung…`;
+    btnHitung.innerHTML = `
+        <span class="inline-block w-4 h-4 border-2 border-white/40 border-t-white
+                     rounded-full animate-spin mr-2"></span> Menghitung…`;
 
     try {
         const res  = await fetch('/kalkulator/calculate', {
-            method: 'POST',
+            method:  'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
-            body: JSON.stringify({ items }),
+            body:    JSON.stringify({ items }),
         });
         const data = await res.json();
 
         if (res.ok) {
             lastResult = data;
-            renderResult(data, totalGram);
-            addToSessionHistory(data, totalGram);
-            fetchAlternatives(lastInputFood);
+            renderResult(data);
+            addToSessionHistory(data);
+            // Ambil alternatif dari makanan pertama
+
         } else {
             alert('Terjadi kesalahan: ' + (data.message ?? 'Coba lagi.'));
         }
@@ -851,18 +851,16 @@ btnHitung.addEventListener('click', async () => {
         console.error(e);
     } finally {
         btnHitung.disabled = false;
-        btnHitung.innerHTML = `Hitung Kandungan Nutrisi`;
-        updateBtn();
+        btnHitung.innerHTML = `<i class='bx bx-calculator text-lg'></i> Hitung Kandungan Nutrisi`;
+        updateHitungBtn();
     }
 });
 
 /* ══════════════════════════════════════
    RENDER RESULT
 ══════════════════════════════════════ */
-function renderResult(data, totalGram) {
+function renderResult(data) {
     const { totals, status, daily_goal } = data;
-
-    resEmpty.style.display = 'none';
 
     animateNumber(resCal,  totals.calories);
     animateNumber(resProt, totals.protein);
@@ -871,7 +869,7 @@ function renderResult(data, totalGram) {
 
     const calPct = Math.min(Math.round(totals.calories / (daily_goal || 2000) * 100), 100);
     calBar.style.width = calPct + '%';
-    calBarLabel.textContent = `${calPct}% dari kebutuhan harian (${daily_goal} kcal)`;
+    calBarLabel.textContent = `${calPct}% dari kebutuhan harian (${daily_goal} kal)`;
 
     const maxVal = Math.max(totals.protein, totals.fat, totals.carbs, 1);
     const minH   = 8;
@@ -886,7 +884,7 @@ function renderResult(data, totalGram) {
         yellow: { cls: 'status-cukup',  label: 'CUKUP'  },
         red:    { cls: 'status-batasi', label: 'BATASI' },
     };
-    const badge = badgeMap[status.color] ?? badgeMap.green;
+    const badge = badgeMap[status?.color] ?? badgeMap.green;
     statusBadge.className = `status-badge ${badge.cls}`;
     statusText.textContent = badge.label;
     statusBadge.classList.remove('hidden');
@@ -900,10 +898,11 @@ function animateNumber(el, target) {
 }
 
 /* ══════════════════════════════════════
-   SESSION HISTORY — sesuai desain gambar
+   SESSION HISTORY
 ══════════════════════════════════════ */
-function addToSessionHistory(data, gram) {
-    const names = data.details.map(d => d.food_name).join(', ');
+function addToSessionHistory(data) {
+    // Nama: gabungan semua makanan
+    const names = selectedFoods.map(f => f.food_name).join(', ');
     const cal   = Math.round(data.totals.calories);
     const pct   = cal / (data.daily_goal || 2000) * 100;
     const badgeCls = pct <= 30 ? 'status-aman' : (pct <= 60 ? 'status-cukup' : 'status-batasi');
@@ -913,7 +912,8 @@ function addToSessionHistory(data, gram) {
     item.className = 'history-row fade-up';
     item.innerHTML = `
         <div class="flex items-center gap-3 min-w-0">
-            <div class="w-7 h-7 rounded-lg bg-[#F5F5F0] flex items-center justify-center text-be-muted text-sm flex-shrink-0">
+            <div class="w-7 h-7 rounded-lg bg-[#F5F5F0] flex items-center justify-center
+                        text-be-muted text-sm flex-shrink-0">
                 <i class='bx bx-time-five'></i>
             </div>
             <div class="min-w-0">
@@ -929,88 +929,28 @@ function addToSessionHistory(data, gram) {
     sessionHistory.prepend(item);
 }
 
-
-async function fetchAlternatives(originFood) {
-    if (!originFood || !originFood.food_id) return;
-    try {
-        const res  = await fetch(`/kalkulator/alternatives?food_id=${originFood.food_id}`);
-        const alts = await res.json();
-        if (alts.length) renderAlternatives(originFood, alts);
-    } catch (e) { console.error(e); }
-}
-
-function renderAlternatives(originFood, alts) {
-    altList.innerHTML = '';
-
-    // Hitung gram yang dipakai
-    let gramPerPortion = qtyUnit.value === 'custom'
-        ? (parseFloat(customGram.value) || 100)
-        : parseFloat(qtyUnit.value);
-    const portions  = parseFloat(qtyInput.value) || 1;
-    const totalGram = gramPerPortion * portions;
-    const ratio     = totalGram / 100;
-
-    // Unit label
-    const unitLabels = {
-        '200': 'porsi', '150': 'mangkok', '100': 'porsi', '50': 'setengah porsi', 'custom': 'gram'
-    };
-    const unitLabel = unitLabels[qtyUnit.value] ?? 'porsi';
-
-    alts.slice(0, 4).forEach(alt => {
-        const oriCal = Math.round((originFood.calories_kcal || 0) * ratio);
-        const altCal = Math.round((alt.calories_kcal || 0) * ratio);
-
-        const row = document.createElement('div');
-        row.className = 'alt-row cursor-pointer hover:bg-be-light/50 rounded-xl px-1 transition-colors';
-        row.innerHTML = `
-            <div class="alt-left">
-                <p class="alt-name" style="text-decoration: line-through; color: #6B7558;">${escHtml(originFood.food_name)}</p>
-                <p class="alt-cal">${oriCal} kcal / ${unitLabel}</p>
-            </div>
-            <div class="alt-arrow-icon">→</div>
-            <div class="alt-right">
-                <p class="alt-name">${escHtml(alt.food_name)}</p>
-                <p class="alt-cal">${altCal} kcal / ${unitLabel}</p>
-            </div>
-        `;
-        row.addEventListener('click', () => addFood(alt));
-        altList.appendChild(row);
-    });
-
-    altCard.classList.remove('hidden');
-}
-
 /* ══════════════════════════════════════
    RESET
 ══════════════════════════════════════ */
 btnReset.addEventListener('click', () => {
     selectedFoods = [];
-    selectedPresets.clear();
+    pendingFood   = null;
 
-    document.querySelectorAll('#preset-chips .preset-chip').forEach(btn => {
-        btn.classList.remove('active');
-        btn.textContent = btn.dataset.name;
-    });
+    renderFoodList();
+    updateHitungBtn();
+    setGram(100);
 
-    renderTags();
-    updateBtn();
-    qtyInput.value = 1;
-    qtyUnit.value  = '100';
-    customGramWrap.classList.add('hidden');
-    customBahanWrap.style.display = 'none';
-    foodSearch.value = '';
+    foodSearch.value     = '';
+    btnTambah.disabled   = true;
     closeDropdown();
 
-    resEmpty.style.display = '';
+    // Reset result panel
     resCal.textContent = resProt.textContent = resFat.textContent = resCarb.textContent = '—';
     calBar.style.width = '0%';
     calBarLabel.textContent = 'dari kebutuhan harian';
     barProtV.style.height = barFatV.style.height = barCarbV.style.height = '0%';
     statusBadge.classList.add('hidden');
-    altCard.classList.add('hidden');
-    altList.innerHTML = '';
     lastResult = null;
-    lastInputFood = null;
 });
 
 /* ══════════════════════════════════════
@@ -1018,11 +958,8 @@ btnReset.addEventListener('click', () => {
 ══════════════════════════════════════ */
 function escHtml(str) {
     return String(str ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 </script>
 @endpush

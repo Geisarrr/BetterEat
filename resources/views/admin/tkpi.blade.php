@@ -37,7 +37,7 @@
                 <tr class="border-b border-[#E5E5E5] text-[#1B1C18] bg-[#F9FAFB]">
                     <th class="px-6 py-4 text-[13px] font-bold">Nama Pangan</th>
                     <th class="px-6 py-4 text-[13px] font-bold">Takaran Saji</th>
-                    <th class="px-6 py-4 text-[13px] font-bold text-center">Kalori <span class="font-normal text-[#75786D] text-[11px]">(kcal)</span></th>
+                    <th class="px-6 py-4 text-[13px] font-bold text-center">Kalori <span class="font-normal text-[#75786D] text-[11px]">(kal)</span></th>
                     <th class="px-6 py-4 text-[13px] font-bold text-center">Protein <span class="font-normal text-[#75786D] text-[11px]">(g)</span></th>
                     <th class="px-6 py-4 text-[13px] font-bold text-center">Lemak <span class="font-normal text-[#75786D] text-[11px]">(g)</span></th>
                     <th class="px-6 py-4 text-[13px] font-bold text-center">Karbohidrat <span class="font-normal text-[#75786D] text-[11px]">(g)</span></th>

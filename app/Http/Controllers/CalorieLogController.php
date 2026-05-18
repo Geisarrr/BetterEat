@@ -9,34 +9,29 @@ use Illuminate\Support\Facades\Auth;
 class CalorieLogController extends Controller
 {
     /**
-     * [READ] Menampilkan halaman jurnal & riwayat makan (Floating Page)
+     * [READ] Menampilkan halaman form tambah menu & riwayat hari ini
      */
     public function index(Request $request)
     {
         $userId = Auth::id();
 
-        // 1. Ambil riwayat makan user khusus hari ini
+        // Query pakai logged_at (sesuai kolom di migration)
         $logs = CalorieLog::where('user_id', $userId)
-            ->whereDate('logged_at', now()) 
+            ->whereDate('logged_at', now())
             ->orderBy('logged_at', 'desc')
             ->get();
 
-        // 2. Hitung total konsumsi untuk ditampilkan di ringkasan atas kartu
         $totalKonsumsi = $logs->sum('calories');
-        
-        // 3. Ambil target kalori dari profil user (default 2000 jika kosong)
         $target = Auth::user()->profile->daily_calorie_target ?? 2000;
 
-        // Kita tidak butuh $foods lagi karena user ketik manual
         return view('calorie_logs.index', compact('logs', 'totalKonsumsi', 'target'));
     }
 
     /**
-     * [CREATE] Menambahkan catatan kalori secara manual
+     * [CREATE] Menyimpan catatan kalori input manual
      */
     public function store(Request $request)
     {
-        // Validasi input manual: Nama makanan, Kalori, dan Waktu makan
         $request->validate([
             'meal_name' => 'required|string|max:255',
             'calories'  => 'required|integer|min:1',
@@ -44,15 +39,17 @@ class CalorieLogController extends Controller
             'logged_at' => 'nullable|date',
         ]);
 
-        // Simpan data langsung apa adanya sesuai yang diketik user
         CalorieLog::create([
-            'user_id'   => Auth::id(),
-            'meal_name' => $request->meal_name,
-            'calories'  => $request->calories,
-            'meal_time' => $request->meal_time,
-            'logged_at' => $request->logged_at ?? now(),
-            // Kolom gizi lainnya (protein, fat, carbs) akan bernilai null/0 
-            // kecuali kamu ingin menambah inputnya juga di UI.
+            'user_id'       => Auth::id(),
+            'meal_name'     => $request->meal_name,
+            'calories'      => $request->calories,
+            'meal_time'     => $request->meal_time,
+            'logged_at'     => $request->logged_at ?? now(),
+            'food_id'       => null,
+            'quantity_gram' => null,
+            'protein_g'     => 0,
+            'fat_g'         => 0,
+            'carbs_g'       => 0,
         ]);
 
         return redirect()->route('dashboard')
@@ -60,7 +57,7 @@ class CalorieLogController extends Controller
     }
 
     /**
-     * [DELETE] Menghapus catatan jika ada yang salah input
+     * [DELETE] Menghapus catatan makan
      */
     public function destroy(string $id)
     {
@@ -76,8 +73,7 @@ class CalorieLogController extends Controller
     }
 
     /**
-     * --- FUNGSI PEMBANTU ---
-     * Digunakan di dashboard untuk kalkulasi progress bar
+     * Helper untuk kalkulasi dashboard
      */
     public static function getTodaySummary()
     {

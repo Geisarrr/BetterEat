@@ -113,7 +113,6 @@ class RecipeController extends Controller
             'cooking_steps'     => 'required|string',
         ]);
 
-        // ✅ PERBAIKAN: Proses upload file dan simpan path-nya
         $imagePath = null;
         if ($request->hasFile('image')) {
             // Simpan ke storage/app/public/recipes/
@@ -152,7 +151,6 @@ class RecipeController extends Controller
         $validated = $request->validate([
             'name'              => 'required|string|max:255',
             'description'       => 'nullable|string',
-            // ✅ PERBAIKAN: validasi sebagai file upload, bukan string
             'image'             => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'calories'          => 'required|numeric|min:0',
             'protein_g'         => 'required|numeric|min:0',
@@ -168,7 +166,6 @@ class RecipeController extends Controller
             'cooking_steps'     => 'required|string',
         ]);
 
-        // ✅ PERBAIKAN: Proses upload file baru jika ada
         if ($request->hasFile('image')) {
             // Hapus foto lama dari storage agar tidak menumpuk
             if ($recipe->image_url) {
@@ -197,7 +194,6 @@ class RecipeController extends Controller
     {
         $recipe = Recipe::findOrFail($id);
 
-        // ✅ TAMBAHAN: Hapus file foto dari storage saat resep dihapus
         if ($recipe->image_url) {
             Storage::disk('public')->delete($recipe->image_url);
         }

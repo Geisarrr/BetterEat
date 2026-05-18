@@ -223,26 +223,6 @@
             @endif
             <input type="hidden" name="category" value="{{ $activeCategory }}">
 
-            {{-- Budget --}}
-            <div class="flex flex-col gap-1">
-                <label class="text-xs text-be-muted font-medium">Budget</label>
-                <select name="budget" class="filter-select" onchange="this.form.submit()">
-                    <option value="">Semua Budget</option>
-                    <option value="15000" {{ ($filters['budget'] ?? '') == '15000' ? 'selected' : '' }}>
-                        s/d Rp 15.000
-                    </option>
-                    <option value="25000" {{ ($filters['budget'] ?? '') == '25000' ? 'selected' : '' }}>
-                        s/d Rp 25.000
-                    </option>
-                    <option value="50000" {{ ($filters['budget'] ?? '') == '50000' ? 'selected' : '' }}>
-                        s/d Rp 50.000
-                    </option>
-                    <option value="100000" {{ ($filters['budget'] ?? '') == '100000' ? 'selected' : '' }}>
-                        s/d Rp 100.000
-                    </option>
-                </select>
-            </div>
-
             {{-- Kalori --}}
             <div class="flex flex-col gap-1">
                 <label class="text-xs text-be-muted font-medium">Kalori</label>
@@ -276,7 +256,6 @@
             {{-- Tombol Terapkan Filter --}}
             <div class="flex flex-col gap-1">
                 
-                {{-- Label kosong agar sejajar --}}
                 <label class="text-xs opacity-0 select-none">
                     Filter
                 </label>
@@ -359,13 +338,6 @@
                                          {{ $recipe->category_badge_color }}">
                                 {{ $recipe->category_label }}
                             </span>
-
-                            {{-- Badge GI (untuk Diabetes) --}}
-                            @if($recipe->glycemic_index === 'Low')
-                                <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-semibold bg-white/90 text-be-green">
-                                    GI Rendah
-                                </span>
-                            @endif
                         </div>
 
                         {{-- Konten --}}

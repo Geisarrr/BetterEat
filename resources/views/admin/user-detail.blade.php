@@ -137,7 +137,7 @@
             <div>
                 <p class="text-[12px] font-semibold text-[#75786D] mb-1">Target Kalori Harian</p>
                 <p class="text-sm font-medium text-[#1B1C18]">
-                    {{ $user->profile->daily_calorie_target ?? '-' }} kcal
+                    {{ $user->profile->daily_calorie_target ?? '-' }} kal
                 </p>
             </div>
             <div class="md:col-span-2">

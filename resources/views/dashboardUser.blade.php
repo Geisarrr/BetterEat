@@ -1,3 +1,4 @@
+// dashboardUser.blade.php
 @extends('layouts.user')
 
 @section('title', 'Dashboard User - BetterEat')
@@ -5,28 +6,30 @@
 @section('content')
 
 @php
-    // 1. Ambil Target Kalori dari Profile (Default 2000 jika kosong)
     $target = Auth::user()->profile->daily_calorie_target ?? 2000;
 
-    // 2. Hitung Total Konsumsi Hari Ini dari tabel calorie_logs
-    $terpakai = Auth::user()->calorieLogs()->whereDate('created_at', now())->sum('calories');
+    // Perbaikan: pakai logged_at bukan created_at
+    $terpakai = Auth::user()->calorieLogs()->whereDate('logged_at', now())->sum('calories');
 
-    // 3. Hitung Sisa & Persentase untuk Progress Circle
     $sisa = max(0, $target - $terpakai);
     $persentase = ($target > 0) ? min(round(($terpakai / $target) * 100), 100) : 0;
-    
-    // Keliling lingkaran SVG (2 * pi * r) = 2 * 3.14 * 70 ≈ 440
     $offset = 440 - (440 * ($persentase / 100));
 
-    // 4. Ambil 3 Riwayat Konsumsi Terakhir Hari Ini
+    // Perbaikan: pakai logged_at bukan created_at
     $riwayatHariIni = Auth::user()->calorieLogs()
-                        ->whereDate('created_at', now())
-                        ->latest()
+                        ->whereDate('logged_at', now())
+                        ->latest('logged_at')
                         ->take(3)
                         ->get();
 @endphp
 
 <div class="container mx-auto px-6 lg:px-20 pt-28 pb-10">
+
+    @if(session('success'))
+    <div class="mb-6 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 text-sm rounded-r-xl shadow-sm">
+        <p class="font-semibold">{{ session('success') }}</p>
+    </div>
+    @endif
 
     <div class="bg-gradient-to-r from-[#3C4C25] to-[#53643A] rounded-2xl p-8 shadow-lg mb-8 relative overflow-hidden">
         <div class="relative z-10 w-full lg:w-2/3">
@@ -34,14 +37,14 @@
                 Selamat Pagi, {{ explode(' ', Auth::user()->full_name)[0] }}!
             </h1>
             <p class="text-[#D6EAB5] text-lg mb-6 leading-relaxed">
-                Kamu telah mengonsumsi <strong>{{ number_format($terpakai) }} kkal</strong> hari ini. 
+                Kamu telah mengonsumsi <strong>{{ number_format($terpakai) }} kal</strong> hari ini.
                 @if($sisa > 0)
                     Tetap jaga pola makan untuk kesehatan optimal!
                 @else
                     Wah, target kalorimu sudah tercapai! Perhatikan asupan selanjutnya ya.
                 @endif
             </p>
-            
+
             <div class="flex flex-wrap gap-4">
                 <div class="bg-white/10 backdrop-blur-md rounded-xl py-3 px-5 flex items-center gap-3">
                     <div class="bg-[#C5D8A4] p-2 rounded-lg">
@@ -49,7 +52,7 @@
                     </div>
                     <div>
                         <p class="text-[10px] text-white/70 uppercase tracking-widest">Tercapai</p>
-                        <p class="font-bold text-white text-base">{{ number_format($terpakai) }} kcal</p>
+                        <p class="font-bold text-white text-base">{{ number_format($terpakai) }} kal</p>
                     </div>
                 </div>
                 <div class="bg-white/10 backdrop-blur-md rounded-xl py-3 px-5 flex items-center gap-3">
@@ -67,19 +70,19 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
+
         <div class="lg:col-span-2 space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
+
                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-[#F1EFE7]">
                     <h2 class="font-heading font-semibold text-lg text-be-dark mb-6">Target Harian</h2>
-                    
+
                     <div class="flex justify-center mb-6 relative">
                         <svg class="w-40 h-40 transform -rotate-90">
                             <circle cx="80" cy="80" r="70" stroke="#F1EFE7" stroke-width="12" fill="none" />
-                            <circle cx="80" cy="80" r="70" stroke="#53643A" stroke-width="12" fill="none" 
-                                    stroke-dasharray="440" 
-                                    stroke-dashoffset="{{ $offset }}" 
+                            <circle cx="80" cy="80" r="70" stroke="#53643A" stroke-width="12" fill="none"
+                                    stroke-dasharray="440"
+                                    stroke-dashoffset="{{ $offset }}"
                                     class="transition-all duration-1000 ease-out" />
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center">
@@ -137,13 +140,13 @@
                     <div>
                         <div class="flex justify-between text-sm mb-2">
                             <span class="font-medium text-be-dark">Progress Kalori</span>
-                            <span class="text-[#75786D]">{{ number_format($terpakai) }} / {{ number_format($target) }} kkal</span>
+                            <span class="text-[#75786D]">{{ number_format($terpakai) }} / {{ number_format($target) }} kal</span>
                         </div>
                         <div class="w-full bg-[#EFEEE7] rounded-full h-3">
                             <div class="bg-[#53643A] h-3 rounded-full" style="width: {{ $persentase }}%"></div>
                         </div>
                     </div>
-                    </div>
+                </div>
             </div>
         </div>
 

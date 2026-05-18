@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="space-y-1">
-                    <label class="text-[13px] font-semibold text-gray-700">Estimasi Kalori (kkal)</label>
+                    <label class="text-[13px] font-semibold text-gray-700">Estimasi Kalori (kal)</label>
                     <input type="number" name="calories" value="{{ old('calories') }}" required 
                         placeholder="Contoh: 450"
                         class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-[#FAFAFA] focus:ring-2 focus:ring-[#4A6741] outline-none text-sm transition">
